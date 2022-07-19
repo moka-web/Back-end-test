@@ -93,17 +93,7 @@ class contenedor {
         }
      }
 
-     getRandomProduct = async()=>{
-         try {
-            let data = await fs.promises.readFile(this.file, "utf-8")
-            let parseData = await JSON.parse(data)
-            let RandomIndex= Math.floor(Math.random()* parseData.length)
-            let RandomProduct = parseData[RandomIndex]
-            return RandomProduct
-         } catch (error) {
-             console.error(error)
-         }
-     }
+     
 }
 
 module.exports = contenedor
