@@ -6,8 +6,6 @@ class contenedor {
         this.file=file
      }
 
-     
-
      save= async (object)=>{
         try {
             let data = await fs.promises.readFile(this.file,"utf-8")
@@ -58,7 +56,7 @@ class contenedor {
          try {
             let data = await fs.promises.readFile(this.file, "utf-8")
             let parsedData = await JSON.parse(data)
-           console.log(parsedData) 
+           return parsedData 
          } catch (error) {
              console.error(error)
          }
@@ -90,6 +88,19 @@ class contenedor {
             
         } catch (error) {
             console.error(error)
+        }
+     }
+
+     getRandomProduct = async()=>{
+        try {
+            let data = await fs.promises.readFile(this.file, "utf-8")
+            let parseData = await JSON.parse(data)
+            let randomIndex = Math.floor(Math.random()*parseData.length)
+            let randomProduct = parseData[randomIndex]
+            return randomProduct
+            
+        } catch (error) {
+            console.log(error)
         }
      }
 
