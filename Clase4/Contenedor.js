@@ -40,7 +40,7 @@ class contenedor {
              let data = await fs.promises.readFile(this.file,"utf-8");
              let parsedData = await JSON.parse(data)
              if(parsedData.find(e=>e.id === id)) {
-                console.log( parsedData.find(e=>e.id === id))
+              return parsedData.find(e=>e.id === id)
              } else {
                 console.log('el elemento no existe')
              }
@@ -104,6 +104,22 @@ class contenedor {
         }
      }
 
+     updateProduct= async(id,obj)=>{
+        try {
+            let data = await fs.promises.readFile(this.file, "utf-8")
+            let parseData = await JSON.parse(data)
+            let productIndex = parseData.findIndex(products=> products.id === id)
+
+            if (parseData[productIndex]) {
+                parseData[productIndex] = { ...parseData[productIndex],...obj}
+                await fs.promises.writeFile(this.file, JSON.stringify(parseData, null, 2))
+            } else{
+                console.error("no se encontro el producto que quieres actualizar")
+            }
+          return parseData[productIndex]
+        } catch (error) { 
+        }
+     }
      
 }
 
