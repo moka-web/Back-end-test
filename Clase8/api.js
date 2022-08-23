@@ -31,7 +31,7 @@ router.get('/', async (req,res)=>{
 //con jsonParser funciona desde postman
 router.post('/' , urlencodedParser, jsonParser, async (req, res) => {
     const { body } = req;
-    console.log()
+    
     const idAsignado = await container.save(body);
     res.json({ success: "ok", new: { ...body, id: idAsignado } });
   });
