@@ -1,0 +1,86 @@
+<div class="shadow p-4 mt-3 container ">
+    <div class="row">
+        <form id="form" class=" col-md-6" onsubmit="return submitProduct(event)">
+            <h1 class="text-center fw-bold mb-4">cargar producto </h1>
+            <div class="mb-3">
+            <input type="text" name="title"  id="title" class="form-control" placeholder="Nombre" required />
+            </div>
+            <div class="mb-3">
+            <input type="text" name="price" id="price" class="form-control" placeholder="Precio" required />
+            </div>
+            <div class="mb-3">
+            <input type="text" name="thumbnail" id="thumbnail" class="form-control" placeholder="Imagen" required />
+            </div>
+            <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-info">Cargar</button>
+            </div>
+        </form>
+
+        <div class="mt-4 col-md-6">
+        <h1 class="text-center fw-bold mb-4">Listado </h1>
+        <table class="table table-light table-bordered">
+            <thead>
+            <tr>
+                <th class="text-center" scope="col">Nombre</th>
+                <th class="text-center" scope="col">Precio</th>
+                <th class="text-center" scope="col">Imagen</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#each productos}}
+                <tr>
+                <td class="text-center">{{this.title}}</td>
+                <td class="text-center">{{this.price}}</td>
+                <td class="text-center"><img
+                    src={{this.thumbnail}}
+                    style="width: 40px; height: 40px;"
+                    class="img-thumbnail"
+                    alt={{this.title}}
+                    /></td>
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+        </div>
+</div>
+</div>
+
+
+
+<div class="shadow p-3 mt-4 container">
+  <h1 class="text-center fw-bold mb-4">Chat</h1>
+  <form id="form-chat" onsubmit="return submitMenssage(event)">
+    <input
+      class="form-control"
+      type="email"
+      name="email"
+      id="email"
+      placeholder="email"
+      required
+    />
+    <hr />
+    <div class="chat my-3" id="chat">
+      {{#each chat}}
+        <p style="margin:5px;">
+          <span class="fw-bold">{{this.email}}</span>
+          <span style="color:brown;"> [{{this.fecha}}]</span>
+          <span class="fst-italic" >:{{this.mensaje}}</span>
+        </p>
+      {{/each}}
+    </div>
+    <div class="d-flex justify-content-center mt-2">
+      <input
+        class="form-control"
+        type="text"
+        name="mensaje"
+        id="mensaje"
+        placeholder="mensaje"
+        required
+      />
+      <button
+        type="submit"
+        class="btn btn-info text-white ms-3"
+      >Enviar!</button>
+    </div>
+  </form>
+</div>

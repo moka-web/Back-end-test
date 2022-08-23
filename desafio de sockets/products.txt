@@ -1,0 +1,20 @@
+[
+  {
+    "title": "tomas",
+    "price": null,
+    "thumbnail": "https://cdna.artstation.com/p/assets/images/images/046/235/272/smaller_square/pixel-arts-de-un-nino-random-ranita-uwu.jpg?1644605499",
+    "id": 1
+  },
+  {
+    "title": "perro",
+    "price": 10000,
+    "thumbnail": "https://inta.gob.ar/sites/default/files/288-cyanoliseus-patagonicus.jpg",
+    "id": 2
+  },
+  {
+    "title": "terodactilo",
+    "price": 944411,
+    "thumbnail": "https://cdna.artstation.com/p/assets/images/images/046/235/272/smaller_square/pixel-arts-de-un-nino-random-ranita-uwu.jpg?1644605499",
+    "id": 3
+  }
+]
