@@ -1,0 +1,32 @@
+[
+  {
+    "name": "cosa",
+    "price": "10000000",
+    "thumbnail": "https://cdna.artstation.com/p/assets/images/images/046/235/272/smaller_square/pixel-arts-de-un-nino-random-ranita-uwu.jpg?1644605499",
+    "id": 1
+  },
+  {
+    "name": "producto nuevo",
+    "price": 695995,
+    "thumbnail": "https://tresubresdobles.com/wp-content/uploads/2019/08/skft-912381dcd5b2c45c4a9ce8acf32cfd8c-768x961.jpg",
+    "id": 3
+  },
+  {
+    "name": "producto nuevo",
+    "price": 695995,
+    "thumbnail": "https://tresubresdobles.com/wp-content/uploads/2019/08/skft-912381dcd5b2c45c4a9ce8acf32cfd8c-768x961.jpg",
+    "id": 5
+  },
+  {
+    "name": "cosa",
+    "price": "100000",
+    "thumbnail": "https://cdna.artstation.com/p/assets/images/images/046/235/272/smaller_square/pixel-arts-de-un-nino-random-ranita-uwu.jpg?1644605499",
+    "id": 6
+  },
+  {
+    "name": "a ver che",
+    "price": 123123,
+    "thumbnail": "https://tresubresdobles.com/wp-content/uploads/2019/08/skft-912381dcd5b2c45c4a9ce8acf32cfd8c-768x961.jpg",
+    "id": 7
+  }
+]
