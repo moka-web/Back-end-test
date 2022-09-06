@@ -2,9 +2,24 @@ const express = require('express');
 const app = express();
 const { engine } = require('express-handlebars');
 const PORT = 8080;
-const contenedor = require('./Contenedor.js')
-const container = new contenedor('products.txt')
+const contenedor = require('./Contenedor')
 const chatdb =new contenedor('chat.txt')
+
+//bases de datos
+const newcontenedor = require('./newcontenedor.js');
+
+const {mysql_db} = require("./options/mysql.js");
+const {sqlitedb} = require("./options/sqlite3.js")
+
+//sql
+const knexmysql =  require("knex")(mysql_db);
+const productosdb = new newcontenedor(knexmysql,"products");
+
+//sqlite
+const knexsqlite =require("knex")(sqlitedb);
+const sqlitechatdb = new newcontenedor(knexsqlite,"mensajes"); 
+
+
 
 
 const httpServer = require("http").createServer(app);
@@ -32,9 +47,9 @@ let products = [];
 
 
 app.get('/', async (req, res) => {
-  let productos = await container.getAll()
-  let chat = await chatdb.getAll()
- 
+  let productos = await productosdb.getAll()
+  let chat = await sqlitechatdb.getAll()
+
   res.render('main', { productos , chat });
 });
 
@@ -45,13 +60,15 @@ io.on("connection", (socket) => {
 
   socket.on("producto", async (data) => {
     console.log(data)
-    await container.save(data);
-    products = await container.getAll();
+    await productosdb.save(data);
+    products = await productosdb.getAll();
     io.sockets.emit("producto-row", data);
   });
+
+  
   socket.on("mensaje", async (data) => {
-    await chatdb.save(data);
-    chat = await chatdb.getAll();
+    await sqlitechatdb.save(data);
+    chat = await sqlitechatdb.getAll();
     io.sockets.emit("chat", chat);
   });
 });

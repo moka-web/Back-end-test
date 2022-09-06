@@ -10,9 +10,9 @@ function submitProduct(e) {
   const form = document.getElementById("form");
 
   let newProduct = {
-    title: document.getElementById("title").value,
+    name: document.getElementById("title").value,
     price: parseInt(document.getElementById("price").value),
-    thumbnail: document.getElementById("thumbnail").value,
+    stock: document.getElementById("thumbnail").value,
   };
 
   socket.emit("producto", newProduct);
@@ -50,23 +50,20 @@ socket.on("producto-row", (data) => {
   // td title
   const tdTitle = document.createElement("td");
   tdTitle.classList.add("text-center");
-  tdTitle.textContent = data.title;
+  tdTitle.textContent = data.name;
   // td price
   const tdPrice = document.createElement("td");
   tdPrice.classList.add("text-center");
   tdPrice.textContent = data.price;
-  // td thumbnail
-  const tdThumbnail = document.createElement("td");
-  tdThumbnail.classList.add("text-center");
-  const imgThumbnail = document.createElement("img");
-  imgThumbnail.classList.add("img-thumbnail", "size-thumbnail");
-  imgThumbnail.setAttribute("src", data.thumbnail);
-  imgThumbnail.setAttribute("alt", data.title);
-  tdThumbnail.appendChild(imgThumbnail);
+  // td stock
+  const tdStock= document.createElement("td");
+  tdStock.classList.add("text-center");
+  tdStock.textContent = data.stock;
+  
   // append child
   tr.appendChild(tdTitle);
   tr.appendChild(tdPrice);
-  tr.appendChild(tdThumbnail);
+  tr.appendChild(tdStock);
   tbody.appendChild(tr);
 });
 
