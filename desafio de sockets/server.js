@@ -7,7 +7,6 @@ const chatdb =new contenedor('chat.txt')
 
 //bases de datos
 const newcontenedor = require('./newcontenedor.js');
-
 const {mysql_db} = require("./options/mysql.js");
 const {sqlitedb} = require("./options/sqlite3.js")
 
