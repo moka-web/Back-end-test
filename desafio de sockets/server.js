@@ -2,8 +2,11 @@ const express = require('express');
 const app = express();
 const { engine } = require('express-handlebars');
 const PORT = 8080;
-const contenedor = require('./Contenedor')
-const chatdb =new contenedor('chat.txt')
+const contenedor = require('./Contenedor');
+const apiMock = require('./api/productos');
+
+const chatdb =new contenedor('chat.txt');
+const apiMockProd= new apiMock()
 
 //bases de datos
 const newcontenedor = require('./newcontenedor.js');
@@ -43,6 +46,15 @@ app.engine(
 
 let chat = [];
 let products = [];
+
+app.get('/api/productos-test',(req,res)=>{
+   
+  products = apiMockProd.popular()
+  console.log(products)
+  res.render("tableProductos",{ ...products })
+  
+})
+
 
 
 app.get('/', async (req, res) => {
