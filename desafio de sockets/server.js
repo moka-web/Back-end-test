@@ -51,7 +51,9 @@ app.get('/api/productos-test',(req,res)=>{
    
   products = apiMockProd.popular()
   console.log(products)
-  res.render("tableProductos",{ ...products })
+
+
+  res.render("tableProductos",{ products })
   
 })
 
