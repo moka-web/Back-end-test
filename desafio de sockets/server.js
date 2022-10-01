@@ -1,93 +1,113 @@
-const express = require('express');
-const app = express();
-const { engine } = require('express-handlebars');
+const express = require("express");
+const { engine } = require("express-handlebars");
+const normalizr = require("normalizr");
+const normalize = normalizr.normalize;
+const schema = normalizr.schema;
+const denormalize = normalizr.denormalize;
 const PORT = 8080;
-const contenedor = require('./Contenedor');
-const apiMock = require('./api/productos');
-
-const chatdb =new contenedor('chat.txt');
-const apiMockProd= new apiMock()
-
-//bases de datos
-const newcontenedor = require('./newcontenedor.js');
-const {mysql_db} = require("./options/mysql.js");
-const {sqlitedb} = require("./options/sqlite3.js")
-
-//sql
-const knexmysql =  require("knex")(mysql_db);
-const productosdb = new newcontenedor(knexmysql,"products");
-
-//sqlite
-const knexsqlite =require("knex")(sqlitedb);
-const sqlitechatdb = new newcontenedor(knexsqlite,"mensajes"); 
+const ApiProductosMock = require("./api/productos");
 
 
+const { chatsDaos: Chats } = require("./src/daos/mainDaos");
 
 
+const { generarId } = require("./utils/generadorDeIds");
+const mongoose = require("mongoose");
+
+//
+const chatBD = new Chats();
+const apiProductos = new ApiProductosMock();
+
+//
+const app = express();
 const httpServer = require("http").createServer(app);
 const io = require("socket.io")(httpServer);
 
+//
+httpServer.listen(process.env.PORT || PORT, () => console.log("SERVER ON"));
+httpServer.on("error", (error) => console.log(`Error en el servidor ${error}`));
 
+//
+app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname + '/public'));
 
-app.set('view engine', 'hbs');
-app.set('views', './views');
+// Configuracion del motor HANDLEBARS
+app.set("view engine", "hbs");
+app.set("views", "./views");
 app.engine(
-  'hbs',
+  "hbs",
   engine({
-    extname: '.hbs',
-    defaultLayout: 'index.hbs',
-    layoutsDir: __dirname + '/views/layouts',
-    partialsDir: __dirname + '/views/partials',
+    extname: ".hbs",
+    defaultLayout: "index.hbs",
+    layoutsDir: __dirname + "/views/layouts",
+    partialsDir: __dirname + "/views/partials",
+    runtimeOptions: {
+      allowProtoPropertiesByDefault: true,
+      allowProtoMethodsByDefault: true,
+    },
   })
 );
 
+let productos = [];
 let chat = [];
-let products = [];
 
-app.get('/api/productos-test',(req,res)=>{
-   
-  products = apiMockProd.popular()
-  console.log(products)
-
-
-  res.render("tableProductos",{ products })
-  
-})
-
-
-
-app.get('/', async (req, res) => {
-  let productos = await productosdb.getAll()
-  let chat = await sqlitechatdb.getAll()
-
-  res.render('main', { productos , chat });
+app.get("/", async (req, res) => {
+  chat = await chatBD.getAll();
+  let chatParseado = [];
+  chat.forEach((item) =>
+    chatParseado.push({
+      id: item._id.toString(),
+      author: item.author,
+      text: item.text,
+      timestamp: item.timestamp,
+    })
+  );
+  //
+  const author = new schema.Entity("authors", {}, { idAttribute: "email" });
+  const message = new schema.Entity("messages", {
+    author: author,
+  });
+  const chats = new schema.Entity("chats", { chats: [message] });
+  //
+  const originalData = { id: "999", chats: [...chatParseado] };
+  const dataN = normalize(originalData, chats);
+  res.render("form-list-chat", {
+    encodedJson: encodeURIComponent(JSON.stringify(dataN)),
+  });
 });
 
+app.get("/api/productos-test", async (req, res) => {
+  productos = apiProductos.popular();
+  res.render("table-productos", { productos });
+});
 
 io.on("connection", (socket) => {
-
   console.log("Usuario Conectado" + socket.id);
-
-  socket.on("producto", async (data) => {
-    console.log(data)
-    await productosdb.save(data);
-    products = await productosdb.getAll();
-    io.sockets.emit("producto-row", data);
-  });
-
-  
   socket.on("mensaje", async (data) => {
-    await sqlitechatdb.save(data);
-    chat = await sqlitechatdb.getAll();
-    io.sockets.emit("chat", chat);
+    await chatBD.save({
+      ...data,
+      author: { ...data.author, id: new mongoose.Types.ObjectId() },
+    });
+    chat = await chatBD.getAll();
+    let chatParseado = [];
+    chat.forEach((item) =>
+      chatParseado.push({
+        id: item._id.toString(),
+        author: item.author,
+        text: item.text,
+        timestamp: item.timestamp,
+      })
+    );
+    //
+    const author = new schema.Entity("authors", {}, { idAttribute: "email" });
+    const message = new schema.Entity("messages", {
+      author: author,
+    });
+    const chats = new schema.Entity("chats", { chats: [message] });
+    //
+    const originalData = { id: "999", chats: [...chatParseado] };
+    const dataN = normalize(originalData, chats);
+    io.sockets.emit("chat", dataN);
   });
 });
-
-
-
-const server = httpServer.listen(process.env.PORT || 8080 , () => console.log("SERVER ON"));
-
-server.on('error', (error) => console.log(`Error en servidor ${error}`));
