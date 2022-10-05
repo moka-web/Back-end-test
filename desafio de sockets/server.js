@@ -5,8 +5,16 @@ const normalize = normalizr.normalize;
 const schema = normalizr.schema;
 const denormalize = normalizr.denormalize;
 const PORT = 8080;
-const ApiProductosMock = require("./api/productos");
 
+//cookies
+const cookieParser = require('cookie-parser')
+const session= require('express-session')
+const MongoStore = require('connect-mongo')
+
+
+
+
+const ApiProductosMock = require("./api/productos");
 
 const { chatsDaos: Chats } = require("./src/daos/mainDaos");
 
@@ -32,6 +40,30 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
+//configuracion session cookies
+app.use(
+  session(
+      {   
+          //store: new filestore({path:"./sessions", ttl:300, retries:0}), //esto es para filestore
+          store: MongoStore.create({
+              mongoUrl: "mongodb+srv://TomasJuarez:432373427473@cluster0.818d8oc.mongodb.net/test",
+              mongoOptions:{
+                  useNewUrlParser:true,
+                  useUniFiedTopology: true,
+              }
+          }),
+          secret:"secreto",
+          resave:false,
+          saveUninitialized:false
+      }
+  )
+)
+
+
+
+
+
 // Configuracion del motor HANDLEBARS
 app.set("view engine", "hbs");
 app.set("views", "./views");
@@ -52,7 +84,23 @@ app.engine(
 let productos = [];
 let chat = [];
 
-app.get("/", async (req, res) => {
+
+//aca deberia ir un middleware para obtener el chat y los productos 
+function checkIfIsAdmin (req,res,next){
+  try {
+    if (!req.session.login) {
+        return res.render("formLogin")
+    }else{
+       
+        return next()
+    }
+
+} catch (error) {
+    
+}
+}
+
+app.get("/", checkIfIsAdmin, async (req, res) => {  
   chat = await chatBD.getAll();
   let chatParseado = [];
   chat.forEach((item) =>
@@ -77,10 +125,54 @@ app.get("/", async (req, res) => {
   });
 });
 
+
+app.post('/', async (req,res) =>{
+  let {body} = req;
+  let user = body.user;
+  // console.log(body)
+  // console.log(body.user)
+  // req.session.user= body.user;
+  if(!req.session["login"]){
+    req.session["login"]={};
+    req.session["login"].user = user
+  }
+  // console.log(req.session)
+  res.redirect('http://localhost:8080/')
+
+})
+
+app.get('/logout', (req,res)=>{
+  try {
+    req.session.destroy((error)=>{
+     if(error){
+         return res.json({ status: "Logout ERROR", body: error });
+     }
+     res.status(200).send("Logout ok!")
+    })
+ } catch (error) {
+ }
+
+})
+
+
+
+
+
+
+
 app.get("/api/productos-test", async (req, res) => {
   productos = apiProductos.popular();
   res.render("table-productos", { productos });
 });
+
+
+
+
+
+
+
+
+
 
 io.on("connection", (socket) => {
   console.log("Usuario Conectado" + socket.id);
