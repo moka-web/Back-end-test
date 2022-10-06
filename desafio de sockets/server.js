@@ -55,12 +55,19 @@ app.use(
           }),
           secret:"secreto",
           resave:false,
-          saveUninitialized:false
+          saveUninitialized:false,
+          cookie:{maxAge: 600000}
+
       }
   )
 )
 
-
+app.use(function (req, res, next) {
+  //console.log(req.session);
+  req.session._garbage = Date();
+  req.session.touch();
+  return next();
+});
 
 
 
@@ -101,6 +108,8 @@ function checkIfIsAdmin (req,res,next){
 }
 
 app.get("/", checkIfIsAdmin, async (req, res) => {  
+   let user = req.session.login.user;
+   console.log(user)
   chat = await chatBD.getAll();
   let chatParseado = [];
   chat.forEach((item) =>
@@ -120,9 +129,7 @@ app.get("/", checkIfIsAdmin, async (req, res) => {
   //
   const originalData = { id: "999", chats: [...chatParseado] };
   const dataN = normalize(originalData, chats);
-  res.render("form-list-chat", {
-    encodedJson: encodeURIComponent(JSON.stringify(dataN)),
-  });
+  res.render("form-list-chat", { encodedJson: encodeURIComponent(JSON.stringify(dataN)), user } );
 });
 
 
@@ -147,7 +154,7 @@ app.get('/logout', (req,res)=>{
      if(error){
          return res.json({ status: "Logout ERROR", body: error });
      }
-     res.status(200).send("Logout ok!")
+     res.status(200).redirect('http://localhost:8080/')
     })
  } catch (error) {
  }
@@ -155,22 +162,10 @@ app.get('/logout', (req,res)=>{
 })
 
 
-
-
-
-
-
 app.get("/api/productos-test", async (req, res) => {
   productos = apiProductos.popular();
   res.render("table-productos", { productos });
 });
-
-
-
-
-
-
-
 
 
 
