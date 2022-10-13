@@ -9,6 +9,7 @@ const PORT = 8080;
 //cookies session
 const cookieParser = require('cookie-parser')
 const session= require('express-session')
+
 const MongoStore = require('connect-mongo')
 
 //encriptar password
@@ -40,6 +41,27 @@ const io = require("socket.io")(httpServer);
 //
 httpServer.listen(process.env.PORT || PORT, () => console.log("SERVER ON"));
 httpServer.on("error", (error) => console.log(`Error en el servidor ${error}`));
+
+
+
+//coneccion a mongo 
+// mongoose
+//  .connect(
+//    mongodb+srv://franchas123:${MONGOPSW}@cluster0.zqkvn9v.mongodb.net/?retryWrites=true&w=majority,
+//   { useNewUrlParser: true })
+ 
+//   .then(() => console.log("Connected to DB"))
+//   .catch((e) => {
+//     console.error(e);
+//     throw "can not connect to the db";
+//   });
+
+
+  mongoose.connect(  `mongodb+srv://TomasJuarez:432373427473@cluster0.818d8oc.mongodb.net/test `,
+  { useNewUrlParser: true })   
+  .then(() => console.log("Connected to Mongo Atlas"));
+ 
+  
 
 
 //funciones de encriptacion de password 
@@ -120,9 +142,6 @@ passport.deserializeUser((id, done) => {
 
 //
 
-app.use(passport.initialize());
-app.use(passport.session());
-
 //
 app.use(express.static("public"));
 app.use(express.json());
@@ -152,6 +171,12 @@ app.use(
       }
   )
 )
+
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 app.use(function (req, res, next) {
   //console.log(req.session);
   req.session._garbage = Date();
@@ -181,24 +206,39 @@ app.engine(
 let productos = [];
 let chat = [];
 
+// function checkAuthentication(req, res, next) {
+//   if (req.isAuthenticated()) {
+//     next();
+//   } else {
+//     res.redirect("/login");
+//   }
+// }
 
 
 function checkIfIsAdmin (req,res,next){
-  try {
-    if (!req.session.login) {
-        return res.render("formLogin")
-    }else{
+//   try {
+//     if (!req.session.login) {
+//         return res.render("formLogin")
+//     }else{
        
-        return next()
+//         return next()
+//     }
+
+// } catch (error) {
+    
+// }
+if (req.isAuthenticated("true")) {
+    console.log('usuario ok')
+      next();
+    } else {
+      console.log('usuario not ok')
+      res.render("formLogin");
     }
 
-} catch (error) {
-    
-}
 }
 
 app.get("/", checkIfIsAdmin, async (req, res) => {  
-   let user = req.session.login.user;
+   let user = req.session.username;
    console.log(user)
   chat = await chatBD.getAll();
   let chatParseado = [];
@@ -222,6 +262,23 @@ app.get("/", checkIfIsAdmin, async (req, res) => {
   res.render("form-list-chat", { encodedJson: encodeURIComponent(JSON.stringify(dataN)), user } );
 });
 
+app.get('/signUp',(req,res)=>{
+
+  res.render("formSignUp")
+
+})
+
+app.post('/signUp',passport.authenticate("signup", { failureRedirect: "/failsignup" }),
+(req,res)=>{
+  const {username} = req.user
+  req.session.username = username;
+
+  res.redirect('/')
+
+})
+
+
+
 
 app.post('/', async (req,res) =>{
   let {body} = req;
@@ -235,8 +292,14 @@ app.post('/', async (req,res) =>{
   }
   // console.log(req.session)
   res.redirect('http://localhost:8080/')
-
 })
+
+
+app.post('/', passport.authenticate("login", {failureRedirect:'/failLogin'}), async (req,res) =>{
+  res.redirect('http://localhost:8080/')
+})
+
+
 
 app.get('/logout', (req,res)=>{
   try {
