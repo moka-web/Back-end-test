@@ -6,18 +6,24 @@ const schema = normalizr.schema;
 const denormalize = normalizr.denormalize;
 const PORT = 8080;
 
-//cookies
+//cookies session
 const cookieParser = require('cookie-parser')
 const session= require('express-session')
 const MongoStore = require('connect-mongo')
 
+//encriptar password
+const bcrypt= require('bcrypt');
 
+//passport imports
+const passport = require('passport');
+const localStrategy = require('passport-local').Strategy;
 
 
 const ApiProductosMock = require("./api/productos");
-
 const { chatsDaos: Chats } = require("./src/daos/mainDaos");
 
+//usarios en mongodb
+const Usuarios = require("./src/modelsMDB/schemaUsers")
 
 const { generarId } = require("./utils/generadorDeIds");
 const mongoose = require("mongoose");
@@ -34,6 +40,88 @@ const io = require("socket.io")(httpServer);
 //
 httpServer.listen(process.env.PORT || PORT, () => console.log("SERVER ON"));
 httpServer.on("error", (error) => console.log(`Error en el servidor ${error}`));
+
+
+//funciones de encriptacion de password 
+function isValidPassword(user, password) {
+  return bcrypt.compareSync(password, user.password);
+}
+function createHash(password) {
+  return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
+}
+
+//configuracion middlewares de passport
+
+passport.use("login",
+  new localStrategy((username,password,done)=>{
+    Usuarios.findOne({ username }, (err, user) => {
+      if (err) return done(err);
+
+      if (!user) {
+        console.log("User Not Found with username " + username);
+        return done(null, false);
+      }
+
+      if (!isValidPassword(user, password)) {
+        console.log("Invalid Password");
+        return done(null, false);
+      }
+
+      return done(null, user);
+    })
+  })
+);
+
+passport.use(
+  "signup",
+  new localStrategy(
+    {
+      passReqToCallback: true,
+    },
+    (req, username, password, done) => {
+      console.log(req.body)
+
+      Usuarios.findOne({ username: username }, function (err, user) {
+        if (err) {
+          console.log("Error in SignUp: " + err);
+          return done(err);
+        }
+
+        if (user) {
+          console.log("User already exists");
+          return done(null, false);
+        }
+
+        const newUser = {
+          username: username,
+          password: createHash(password),
+        };
+        Usuarios.create(newUser, (err, userWithId) => {
+          if (err) {
+            console.log("Error in Saving user: " + err);
+            return done(err);
+          }
+          console.log(user);
+          console.log("User Registration succesful");
+          return done(null, userWithId);
+        });
+      });
+    }
+  )
+);
+
+passport.serializeUser((user, done) => {
+  done(null, user._id);
+});
+
+passport.deserializeUser((id, done) => {
+  Usuarios.findById(id, done);
+});
+
+//
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 //
 app.use(express.static("public"));
@@ -54,14 +142,16 @@ app.use(
               }
           }),
           secret:"secreto",
-          resave:false,
+          rolling: true,
+          resave:true,
           saveUninitialized:false,
-          cookie:{maxAge: 600000}
+          cookie:{maxAge: 86400000,
+            httpOnly: false,
+            secure: false,}
 
       }
   )
 )
-
 app.use(function (req, res, next) {
   //console.log(req.session);
   req.session._garbage = Date();
@@ -92,7 +182,7 @@ let productos = [];
 let chat = [];
 
 
-//aca deberia ir un middleware para obtener el chat y los productos 
+
 function checkIfIsAdmin (req,res,next){
   try {
     if (!req.session.login) {
