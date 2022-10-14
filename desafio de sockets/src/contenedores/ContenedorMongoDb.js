@@ -10,7 +10,7 @@ class ContenedorMongoDb {
       await connectMDB();
       const objNuevo = new this.name({ ...obj });
       const objCreado = await objNuevo.save();
-      disconnectMDB();
+      // disconnectMDB();
       return objCreado._id;
     } catch (error) {
       console.log(error);
@@ -21,7 +21,7 @@ class ContenedorMongoDb {
     try {
       await connectMDB();
       const objEncontrado = await this.name.findById(id);
-      disconnectMDB();
+      // disconnectMDB();
       return objEncontrado;
     } catch (error) {
       console.log(error);
@@ -32,7 +32,7 @@ class ContenedorMongoDb {
     try {
       await connectMDB();
       const objEncontrados = await this.name.find();
-      disconnectMDB();
+      // disconnectMDB();
       return objEncontrados;
     } catch (error) {
       console.log(error);
@@ -44,7 +44,7 @@ class ContenedorMongoDb {
       await connectMDB();
       const objEncontrado = await this.name.findById(id);
       await this.name.findByIdAndDelete(id);
-      disconnectMDB();
+      // disconnectMDB();
       return objEncontrado;
     } catch (error) {
       console.log(error);
@@ -57,7 +57,7 @@ class ContenedorMongoDb {
       const objModificado = await this.name.findByIdAndUpdate(id, {
         $set: { ...replace },
       });
-      disconnectMDB();
+      // disconnectMDB();
       return objModificado;
     } catch (error) {
       console.log(error);
