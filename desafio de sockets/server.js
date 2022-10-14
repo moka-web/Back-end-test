@@ -51,11 +51,7 @@ httpServer.on("error", (error) => console.log(`Error en el servidor ${error}`));
   })   
   .then(() => console.log("Connected to Mongo Atlas"));
 
-// mongoose.createConnection
 
-mongoose.set('bufferCommands', false);
- 
-  
 //funciones de encriptacion de password 
 function isValidPassword(user, password) {
   return bcrypt.compareSync(password, user.password);
@@ -165,10 +161,6 @@ app.use(
 )
 
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-
 app.use(function (req, res, next) {
   //console.log(req.session);
   req.session._garbage = Date();
@@ -176,7 +168,8 @@ app.use(function (req, res, next) {
   return next();
 });
 
-
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Configuracion del motor HANDLEBARS
 app.set("view engine", "hbs");
@@ -198,27 +191,10 @@ app.engine(
 let productos = [];
 let chat = [];
 
-// function checkAuthentication(req, res, next) {
-//   if (req.isAuthenticated()) {
-//     next();
-//   } else {
-//     res.redirect("/login");
-//   }
-// }
 
 
 function checkIfIsAdmin (req,res,next){
-//   try {
-//     if (!req.session.login) {
-//         return res.render("formLogin")
-//     }else{
-       
-//         return next()
-//     }
 
-// } catch (error) {
-    
-// }
 if (req.isAuthenticated("true")) {
     console.log('usuario ok')
       next();
@@ -266,45 +242,39 @@ app.post('/signUp',passport.authenticate("signup", { failureRedirect: "/failsign
   res.redirect('/')
 })
 
-app.post('/', async (req,res) =>{
-  let {body} = req;
-  let user = body.user;
-  // console.log(body)
-  // console.log(body.user)
-  // req.session.user= body.user;
-  if(!req.session["login"]){
-    req.session["login"]={};
-    req.session["login"].user = user
-  }
-  // console.log(req.session)
-  res.redirect('http://localhost:8080/')
-})
+// app.post('/', async (req,res) =>{
+//   let {body} = req;
+//   let user = body.user;
+//   // console.log(body)
+//   // console.log(body.user)
+//   // req.session.user= body.user;
+//   if(!req.session["login"]){
+//     req.session["login"]={};
+//     req.session["login"].user = user
+//   }
+//   // console.log(req.session)
+//   res.redirect('http://localhost:8080/')
+// })
 
 
 app.post('/', passport.authenticate("login", {failureRedirect:'/failLogin'}), async (req,res) =>{
-  res.redirect('http://localhost:8080/')
-})
-
-
-
-app.get('/logout',(req,res)=>{
-  req.logOut();
   res.redirect('/')
 })
 
 
-// app.get('/logout', (req,res)=>{
-//   try {
-//     req.session.destroy((error)=>{
-//      if(error){
-//          return res.json({ status: "Logout ERROR", body: error });
-//      }
-//      res.status(200).redirect('http://localhost:8080/')
-//     })
-//  } catch (error) {
-//  }
 
-// })
+app.get('/logout', (req,res)=>{
+  try {
+    req.session.destroy((error)=>{
+     if(error){
+         return res.json({ status: "Logout ERROR", body: error });
+     }
+     res.status(200).redirect('http://localhost:8080/')
+    })
+ } catch (error) {
+ }
+
+})
 
 
 app.get("/api/productos-test", async (req, res) => {
