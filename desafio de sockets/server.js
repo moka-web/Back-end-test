@@ -242,46 +242,20 @@ app.post('/signUp',passport.authenticate("signup", { failureRedirect: "/failsign
   res.redirect('/')
 })
 
-// app.post('/', async (req,res) =>{
-//   let {body} = req;
-//   let user = body.user;
-//   // console.log(body)
-//   // console.log(body.user)
-//   // req.session.user= body.user;
-//   if(!req.session["login"]){
-//     req.session["login"]={};
-//     req.session["login"].user = user
-//   }
-//   // console.log(req.session)
-//   res.redirect('http://localhost:8080/')
-// })
-
 
 app.post('/', passport.authenticate("login", {failureRedirect:'/failLogin'}), async (req,res) =>{
   res.redirect('/')
 })
 
-
-
 app.get('/logout', (req,res)=>{
-  try {
-    req.session.destroy((error)=>{
-     if(error){
-         return res.json({ status: "Logout ERROR", body: error });
-     }
-     res.status(200).redirect('http://localhost:8080/')
-    })
- } catch (error) {
- }
-
+  req.logout();
+  res.redirect("/");
 })
-
 
 app.get("/api/productos-test", async (req, res) => {
   productos = apiProductos.popular();
   res.render("table-productos", { productos });
 });
-
 
 
 io.on("connection", (socket) => {
