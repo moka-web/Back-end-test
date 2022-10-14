@@ -43,27 +43,19 @@ httpServer.listen(process.env.PORT || PORT, () => console.log("SERVER ON"));
 httpServer.on("error", (error) => console.log(`Error en el servidor ${error}`));
 
 
-
-//coneccion a mongo 
-// mongoose
-//  .connect(
-//    mongodb+srv://franchas123:${MONGOPSW}@cluster0.zqkvn9v.mongodb.net/?retryWrites=true&w=majority,
-//   { useNewUrlParser: true })
- 
-//   .then(() => console.log("Connected to DB"))
-//   .catch((e) => {
-//     console.error(e);
-//     throw "can not connect to the db";
-//   });
-
-
-  mongoose.connect(  `mongodb+srv://TomasJuarez:432373427473@cluster0.818d8oc.mongodb.net/test `,
-  { useNewUrlParser: true })   
-  .then(() => console.log("Connected to Mongo Atlas"));
- 
   
 
+  mongoose.connect(  `mongodb+srv://TomasJuarez:432373427473@cluster0.818d8oc.mongodb.net/test `,
+  { 
+    useNewUrlParser: true
+  })   
+  .then(() => console.log("Connected to Mongo Atlas"));
 
+// mongoose.createConnection
+
+mongoose.set('bufferCommands', false);
+ 
+  
 //funciones de encriptacion de password 
 function isValidPassword(user, password) {
   return bcrypt.compareSync(password, user.password);
@@ -263,22 +255,16 @@ app.get("/", checkIfIsAdmin, async (req, res) => {
 });
 
 app.get('/signUp',(req,res)=>{
-
   res.render("formSignUp")
-
 })
+
 
 app.post('/signUp',passport.authenticate("signup", { failureRedirect: "/failsignup" }),
 (req,res)=>{
   const {username} = req.user
   req.session.username = username;
-
   res.redirect('/')
-
 })
-
-
-
 
 app.post('/', async (req,res) =>{
   let {body} = req;
@@ -301,18 +287,24 @@ app.post('/', passport.authenticate("login", {failureRedirect:'/failLogin'}), as
 
 
 
-app.get('/logout', (req,res)=>{
-  try {
-    req.session.destroy((error)=>{
-     if(error){
-         return res.json({ status: "Logout ERROR", body: error });
-     }
-     res.status(200).redirect('http://localhost:8080/')
-    })
- } catch (error) {
- }
-
+app.get('/logout',(req,res)=>{
+  req.logOut();
+  res.redirect('/')
 })
+
+
+// app.get('/logout', (req,res)=>{
+//   try {
+//     req.session.destroy((error)=>{
+//      if(error){
+//          return res.json({ status: "Logout ERROR", body: error });
+//      }
+//      res.status(200).redirect('http://localhost:8080/')
+//     })
+//  } catch (error) {
+//  }
+
+// })
 
 
 app.get("/api/productos-test", async (req, res) => {

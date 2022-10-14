@@ -32,7 +32,7 @@ class ContenedorMongoDb {
     try {
       await connectMDB();
       const objEncontrados = await this.name.find();
-      disconnectMDB();
+      //disconnectMDB();
       return objEncontrados;
     } catch (error) {
       console.log(error);
