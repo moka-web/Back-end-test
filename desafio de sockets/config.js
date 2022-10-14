@@ -5,7 +5,7 @@ const connectMDB = async () => {
   try {
     const URL =
       "mongodb+srv://TomasJuarez:432373427473@cluster0.818d8oc.mongodb.net/test";
-    await mongoose.connect(URL, {
+    mongoose.createConnection(URL, {
       useNewUrlParser: true,
       useUniFiedTopology: true,
     });
