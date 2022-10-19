@@ -4,7 +4,8 @@ const normalizr = require("normalizr");
 const normalize = normalizr.normalize;
 const schema = normalizr.schema;
 const denormalize = normalizr.denormalize;
-const PORT = 8080;
+
+const {PORT, MPASS,MUSER} = require('./configEnv.js')
 
 //cookies session
 const cookieParser = require('cookie-parser')
@@ -28,6 +29,7 @@ const Usuarios = require("./src/modelsMDB/schemaUsers")
 
 const { generarId } = require("./utils/generadorDeIds");
 const mongoose = require("mongoose");
+const { fork } = require("child_process");
 
 //
 const chatBD = new Chats();
@@ -38,18 +40,17 @@ const app = express();
 const httpServer = require("http").createServer(app);
 const io = require("socket.io")(httpServer);
 
+
+
 //
-httpServer.listen(process.env.PORT || PORT, () => console.log("SERVER ON"));
+httpServer.listen(PORT, () => console.log(`server listenin on port ${PORT}`));
 httpServer.on("error", (error) => console.log(`Error en el servidor ${error}`));
 
-
-  
-
-  mongoose.connect(  `mongodb+srv://TomasJuarez:432373427473@cluster0.818d8oc.mongodb.net/test `,
-  { 
-    useNewUrlParser: true
-  })   
-  .then(() => console.log("Connected to Mongo Atlas"));
+mongoose.connect(  `mongodb+srv://${MUSER}:${MPASS}@cluster0.818d8oc.mongodb.net/test `,
+{ 
+  useNewUrlParser: true
+})   
+.then(() => console.log("Connected to Mongo Atlas"));
 
 
 //funciones de encriptacion de password 
@@ -232,6 +233,29 @@ app.get("/", checkIfIsAdmin, async (req, res) => {
 
 app.get('/signUp',(req,res)=>{
   res.render("formSignUp")
+})
+
+app.get('/api/randoms',(req,res)=>{
+  try {
+    res.status(200).render('random')
+  } catch (error) {
+    res.status(500).send({error:error.message})
+  }
+})
+
+app.post('/api/randoms',(req,res)=>{
+  try {
+    let cant = req.query.cant;
+    console.log(cant)
+    const random = fork("./utils/randomJS.js")
+
+    random.send({message:"start" ,cant: cant})
+    random.on("message",(obj)=>{
+    res.json(obj)
+   })
+} catch (error) {
+  res.status(500).send({error: error.message})
+}
 })
 
 
