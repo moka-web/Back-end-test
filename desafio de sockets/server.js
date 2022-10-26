@@ -5,7 +5,7 @@ const normalize = normalizr.normalize;
 const schema = normalizr.schema;
 const denormalize = normalizr.denormalize;
 
-const {PORT, MPASS,MUSER} = require('./configEnv.js')
+const {PORT, MPASS,MUSER, oS, nodeV, paTh, processId, folderPath, maxRSS, numOfProcess, mode} = require('./configEnv.js')
 
 //cookies session
 const cookieParser = require('cookie-parser')
@@ -40,11 +40,33 @@ const app = express();
 const httpServer = require("http").createServer(app);
 const io = require("socket.io")(httpServer);
 
+const cluster = require('cluster');
+const numOfcpus = require('os').cpus().length;
 
+//////clusters con forever
 
-//
-httpServer.listen(PORT, () => console.log(`server listenin on port ${PORT}`));
-httpServer.on("error", (error) => console.log(`Error en el servidor ${error}`));
+if (mode == 'cluster' && cluster.isMaster) {
+  console.log('-------cluster-mode----------')
+  console.log(`Master ${process.pid} is running`);
+
+  for (let i = 0; i < numOfcpus; i++) {
+    cluster.fork();
+  }
+  cluster.on('exit', (worker, code, signal) => {
+    cluster.fork();
+    console.log(`worker ${worker.process.pid} died`);
+  });
+} else {
+  console.log('----------fork mode--------')
+  httpServer.listen(PORT, () => console.log(` worker ${process.pid} server listenin on port ${PORT}`));
+  httpServer.on("error", (error) => console.log(`Error en el servidor ${error}`));
+  console.log(`Worker ${process.pid} started`);
+
+ }
+
+ /// pm2
+//  httpServer.listen(PORT, () => console.log(` worker ${process.pid} server listenin on port ${PORT}`));
+//  httpServer.on("error", (error) => console.log(`Error en el servidor ${error}`));
 
 mongoose.connect(  `mongodb+srv://${MUSER}:${MPASS}@cluster0.818d8oc.mongodb.net/test `,
 { 
@@ -62,7 +84,6 @@ function createHash(password) {
 }
 
 //configuracion middlewares de passport
-
 passport.use("login",
   new localStrategy((username,password,done)=>{
     Usuarios.findOne({ username }, (err, user) => {
@@ -193,7 +214,6 @@ let productos = [];
 let chat = [];
 
 
-
 function checkIfIsAdmin (req,res,next){
 
 if (req.isAuthenticated("true")) {
@@ -235,6 +255,7 @@ app.get('/signUp',(req,res)=>{
   res.render("formSignUp")
 })
 
+
 app.get('/api/randoms',(req,res)=>{
   try {
     res.status(200).render('random')
@@ -243,12 +264,27 @@ app.get('/api/randoms',(req,res)=>{
   }
 })
 
+app.get('/info',(req,res)=>{
+  const data = {
+        os:  oS ,
+        nodeVersion: nodeV,
+        path: paTh,
+        processId: processId,
+        folderPath: folderPath,
+        maxRSS: maxRSS, 
+        procesos:numOfProcess,
+        puerto:PORT
+
+  }
+ 
+  res.send(data)
+})
+
 app.post('/api/randoms',(req,res)=>{
   try {
     let cant = req.query.cant;
     console.log(cant)
     const random = fork("./utils/randomJS.js")
-
     random.send({message:"start" ,cant: cant})
     random.on("message",(obj)=>{
     res.json(obj)
