@@ -45,7 +45,7 @@ const io = require("socket.io")(httpServer);
 const cluster = require('cluster');
 const numOfcpus = require('os').cpus().length;
 
-//////clusters con forever //falta probar si funciona nginx tambien con esto
+//////clusters con forever //
 
 // if (mode == 'cluster' && cluster.isMaster) {
 //   console.log('-------cluster-mode----------')
@@ -220,10 +220,8 @@ let chat = [];
 function checkIfIsAdmin (req,res,next){
 
 if (req.isAuthenticated("true")) {
-    console.log('usuario ok')
       next();
     } else {
-      console.log('usuario not ok')
       res.render("formLogin");
     }
 
@@ -238,7 +236,6 @@ app.get("/datos", (req, res) => {
 
 app.get("/", checkIfIsAdmin, async (req, res) => {  
    let user = req.session.username;
-   console.log(user)
   chat = await chatBD.getAll();
   let chatParseado = [];
   chat.forEach((item) =>

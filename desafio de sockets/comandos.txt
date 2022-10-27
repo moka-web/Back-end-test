@@ -1,0 +1,3 @@
+
+pm2 start server.js --name="tomasCluster" --watch -i max -- 8082
+pm2 start server.js --name="tomasfork" --watch -- PORT

@@ -8,7 +8,7 @@ dotenv.config()
 const args = parseArgs(process.argv.slice(2))
 
 const mode = args.MODE || process.env.MODE 
-console.log(mode)
+
 
 const PORT= args.PORT || process.env.PORT || 8080;
 const MPASS = process.env.MONGOATLAS;
