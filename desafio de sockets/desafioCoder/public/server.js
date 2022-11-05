@@ -3,17 +3,18 @@ const { engine } = require("express-handlebars");
 const normalizr = require("normalizr");
 const normalize = normalizr.normalize;
 const schema = normalizr.schema;
-const denormalize = normalizr.denormalize;
+const compression = require('compression');
 
-const { MPASS,MUSER, oS, nodeV, paTh, processId, folderPath, maxRSS, numOfProcess, mode} = require('./configEnv.js')
+
+const { MPASS,MUSER, oS, nodeV, paTh, processId, folderPath, maxRSS, numOfProcess, mode} = require('./configEnv.js');
 //acordate que cambiaste el puerto
 const PORT = parseInt(process.argv[2]) || 8080;
 
 //cookies session
-const cookieParser = require('cookie-parser')
-const session= require('express-session')
+const cookieParser = require('cookie-parser');
+const session= require('express-session');
 
-const MongoStore = require('connect-mongo')
+const MongoStore = require('connect-mongo');
 
 //encriptar password
 const bcrypt= require('bcrypt');
@@ -22,7 +23,7 @@ const bcrypt= require('bcrypt');
 const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 
-
+//mock productos
 const ApiProductosMock = require("./api/productos");
 const { chatsDaos: Chats } = require("./src/daos/mainDaos");
 
@@ -44,6 +45,10 @@ const io = require("socket.io")(httpServer);
 
 const cluster = require('cluster');
 const numOfcpus = require('os').cpus().length;
+
+const{ logger ,loggerError} = require('./utils/loggers')
+
+
 
 //////clusters con forever //
 
@@ -153,7 +158,9 @@ passport.deserializeUser((id, done) => {
 
 //
 
-//
+//compression
+app.use(compression())
+
 //app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -218,12 +225,20 @@ let chat = [];
 
 
 function checkIfIsAdmin (req,res,next){
-
-if (req.isAuthenticated("true")) {
-      next();
-    } else {
-      res.render("formLogin");
-    }
+try {
+  if (req.isAuthenticated("true")) {
+    next();
+  } else {
+    res.render("formLogin");
+  }
+} catch (error) {
+  loggerError.error({
+    URL: req.originalUrl,
+    method: req.method,
+    error:error.message
+  });
+  return res.status(500).send({status:'error login', body: error})
+}
 
 }
 
@@ -235,7 +250,7 @@ app.get("/datos", (req, res) => {
 });
 
 app.get("/", checkIfIsAdmin, async (req, res) => {  
-   let user = req.session.username;
+  let user = req.session.username;
   chat = await chatBD.getAll();
   let chatParseado = [];
   chat.forEach((item) =>
@@ -283,7 +298,7 @@ app.get('/info',(req,res)=>{
         puerto:PORT
 
   }
- 
+  //console.log(data)
   res.send(data)
 })
 
@@ -354,3 +369,9 @@ io.on("connection", (socket) => {
     io.sockets.emit("chat", dataN);
   });
 });
+
+
+app.all("*",(req,res)=>{
+  logger.warn({URL:req.originalUrl, method:req.method});
+  res.status(404).send("ruta no encontrada")
+})

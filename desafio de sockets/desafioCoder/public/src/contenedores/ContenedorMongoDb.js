@@ -1,5 +1,5 @@
 const { connectMDB, disconnectMDB } = require("../../config");
-
+const {loggerError} = require("../../utils/loggers")
 class ContenedorMongoDb {
   constructor(name) {
     this.name = name;
@@ -13,7 +13,9 @@ class ContenedorMongoDb {
       // disconnectMDB();
       return objCreado._id;
     } catch (error) {
-      console.log(error);
+      loggerError({
+        error: error.message
+      })
     }
   }
 
@@ -24,7 +26,7 @@ class ContenedorMongoDb {
       // disconnectMDB();
       return objEncontrado;
     } catch (error) {
-      console.log(error);
+      loggerError({error:error.message})
     }
   }
 
@@ -35,7 +37,7 @@ class ContenedorMongoDb {
       // disconnectMDB();
       return objEncontrados;
     } catch (error) {
-      console.log(error);
+      loggerError({error:error.message})
     }
   }
 
@@ -47,7 +49,7 @@ class ContenedorMongoDb {
       // disconnectMDB();
       return objEncontrado;
     } catch (error) {
-      console.log(error);
+      loggerError({error:error.message})
     }
   }
 
@@ -60,7 +62,7 @@ class ContenedorMongoDb {
       // disconnectMDB();
       return objModificado;
     } catch (error) {
-      console.log(error);
+     loggerError({error:error.message})
     }
   }
 }
