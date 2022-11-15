@@ -41,6 +41,8 @@ const httpServer = require("http").createServer(app);
 const io = require("socket.io")(httpServer);
 
 const cluster = require('cluster');
+const routerProducts = require("./routes/productsRouter.js");
+const { checkIfIsAdmin } = require("./utils/checkIfIsAdmin.js");
 const numOfcpus = require('os').cpus().length;
 
 //////clusters con forever
@@ -64,10 +66,7 @@ if (mode == 'cluster' && cluster.isMaster) {
 
  }
 
- /// pm2
-//  httpServer.listen(PORT, () => console.log(` worker ${process.pid} server listenin on port ${PORT}`));
-//  httpServer.on("error", (error) => console.log(`Error en el servidor ${error}`));
-
+ 
 mongoose.connect(  `mongodb+srv://${MUSER}:${MPASS}@cluster0.818d8oc.mongodb.net/test `,
 { 
   useNewUrlParser: true
@@ -214,17 +213,7 @@ let productos = [];
 let chat = [];
 
 
-function checkIfIsAdmin (req,res,next){
 
-if (req.isAuthenticated("true")) {
-    console.log('usuario ok')
-      next();
-    } else {
-      console.log('usuario not ok')
-      res.render("formLogin");
-    }
-
-}
 
 app.get("/", checkIfIsAdmin, async (req, res) => {  
    let user = req.session.username;
@@ -316,6 +305,10 @@ app.get("/api/productos-test", async (req, res) => {
   productos = apiProductos.popular();
   res.render("table-productos", { productos });
 });
+
+//ruta productos y carrito 
+
+app.use('/api/productos',routerProducts);
 
 
 io.on("connection", (socket) => {
