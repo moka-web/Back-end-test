@@ -4,6 +4,17 @@ const normalizr = require("normalizr");
 const normalize = normalizr.normalize;
 const schema = normalizr.schema;
 const denormalize = normalizr.denormalize;
+const mimetypes = require('mime-types');
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+  destination:'uploads/',
+  filename: function (req,file,cb){
+    cb(null, Date.now() + file.originalname + '.' + mimetypes.extension(file.mimetype) );
+  }
+})
+//`${Date.now()}-${file.originalname}`
+const upload = multer({storage:storage})
 
 const {PORT, MPASS,MUSER, oS, nodeV, paTh, processId, folderPath, maxRSS, numOfProcess, mode} = require('./configEnv.js')
 
@@ -43,6 +54,8 @@ const io = require("socket.io")(httpServer);
 const cluster = require('cluster');
 const routerProducts = require("./routes/productsRouter.js");
 const { checkIfIsAdmin } = require("./utils/checkIfIsAdmin.js");
+const sendEmail = require("./utils/sendEmail.js");
+const cartRouter = require("./routes/cartRouter.js");
 const numOfcpus = require('os').cpus().length;
 
 //////clusters con forever
@@ -126,14 +139,22 @@ passport.use(
         const newUser = {
           username: username,
           password: createHash(password),
+          email:req.body.email,
+          address:req.body.address,
+          age:req.body.age,
+          phone:req.body.phone
         };
         Usuarios.create(newUser, (err, userWithId) => {
           if (err) {
             console.log("Error in Saving user: " + err);
             return done(err);
           }
+
           console.log(user);
           console.log("User Registration succesful");
+
+          sendEmail('mokajua@gmail.com',"Nuevo Registro",JSON.stringify(newUser,null,2))
+
           return done(null, userWithId);
         });
       });
@@ -151,8 +172,8 @@ passport.deserializeUser((id, done) => {
 
 //
 
-//
-app.use(express.static("public"));
+//esto me cagaba el chat!!!!
+app.use(express.static(__dirname + '/public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -216,8 +237,13 @@ let chat = [];
 
 
 app.get("/", checkIfIsAdmin, async (req, res) => {  
-   let user = req.session.username;
-   console.log(user)
+  let user = req.user.username;
+  const userID =req.user._id
+  console.log(userID)
+  //  console.log(user)
+  // const user = req.user._id
+  // console.log(user)
+  //ahora
   chat = await chatBD.getAll();
   let chatParseado = [];
   chat.forEach((item) =>
@@ -284,7 +310,7 @@ app.post('/api/randoms',(req,res)=>{
 })
 
 
-app.post('/signUp',passport.authenticate("signup", { failureRedirect: "/failsignup" }),
+app.post('/signUp',upload.single('photo_url'),passport.authenticate("signup", { failureRedirect: "/failsignup" }),
 (req,res)=>{
   const {username} = req.user
   req.session.username = username;
@@ -309,7 +335,7 @@ app.get("/api/productos-test", async (req, res) => {
 //ruta productos y carrito 
 
 app.use('/api/productos',routerProducts);
-
+app.use('/api/carrito',cartRouter);
 
 io.on("connection", (socket) => {
   console.log("Usuario Conectado" + socket.id);

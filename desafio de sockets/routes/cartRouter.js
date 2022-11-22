@@ -1,30 +1,28 @@
 const express = require('express')
 //const cartDaos = require('../daos/cartDaos.js')
-const {cartDaos:Cart} = require('../daos/mainDaos')
+//const {cartDaos:Cart} = require('../daos/mainDaos')
+//hacer todos los import de main daos como corresponde {cart products user}
+const {products, users, carts} = require('../src/daos/mainDaos')
 
 const cartRouter= express.Router();
+//esto no va 
+//const cart = new Cart()
 
-const cart = new Cart()
-
+// hay que reemplazar todos los metodos
 cartRouter.post('/', async(req,res)=>{
-    try {
-        const addCart = cart.newCart();
-        res.status(200).send({
-            status:200,
-            data:{
-                addCart
-            },
-            message:'se creo un nuevo carrito'
-        })
-    } catch (error) {
-        console.log(error.message)
-    }
+    if (req.user.cart_id) {
+        return carts.getItemById(req.user.cart_id);}
+    
+        const newCartId = await carts.createCart(req.user._id);
+        return res.json(newCartId);
 })
 
+
+// con este veo el carrito 
 cartRouter.get('/:id', (req,res)=>{
     const id = req.params.id;
     try {
-        const getCart = cart.getCartById(id)
+        const getCart = carts.getById(id)
         res.status(200).send({
             status:200,
             data:{
@@ -39,12 +37,13 @@ cartRouter.get('/:id', (req,res)=>{
 } );
 
 //agregar un producto del listado de productos a un carrito especifico 
-
-cartRouter.post('/:id/:idprod',(req,res)=>{
+cartRouter.post('/:id/:idprod',async (req,res)=>{
     const cartId= req.params.id;
     const idprod=req.params.idprod;
+    
+    const product = await products.getById(idprod)
     try {
-        const addAproduct = cart.addProductToCart(cartId,idprod)
+        const addAproduct = await carts.addCartProduct(cartId,product)
         res.status(200).send({
             status:200,
             data:{
@@ -55,17 +54,14 @@ cartRouter.post('/:id/:idprod',(req,res)=>{
         )
     } catch (error) {
         console.log(error.message)
-        
     }
-
-
 })
 
 
 cartRouter.delete('/:id',( req,res)=>{
     const id = req.params.id;
     try {
-        const deleteCart = cart.deleteCart(id);
+        const deleteCart = carts.deleteById(id)
         res.status(200).send({
             status:200,
             message:`el carrito con id ${id} fue eliminado`
@@ -81,7 +77,7 @@ cartRouter.delete('/:id/:idprod',async (req,res)=>{
     const cartId = req.params.id;
     const productId= req.params.idprod;
     try {
-        const deleteProductoFromCart = await cart.deleteCartProduct(cartId,productId);
+        const deleteProductoFromCart = await carts.deleteCartProduct(cartId,productId)
         res.status(200).send(
             {
                 status:200,

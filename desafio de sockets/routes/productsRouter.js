@@ -1,19 +1,35 @@
-//@ts-check
-
 const express = require('express')
 //const productDaos = require('../daos/productDaos.js')
-const {Product} = require('../src/contenedores/productDaos.js');
+
 const { checkIfIsAdmin } = require('../utils/checkIfIsAdmin.js');
 
+const {products, users, carts} = require('../src/daos/mainDaos');
+
 const routerProducts = express.Router();
+//routerProducts.use(checkIfIsAdmin)
 
+routerProducts.get('/', async (req,res) =>{
+    // const {body} = req;
+    // console.log(body)
+    // const user = await users.getById(JSON.stringify(req.user._id))
+    // console.log(user);
+    const idUser = req.user._id;
+    const user = await users.getById(idUser)
+    const sanitizedUser = { name: user.username, photo_url: user.photo_url, _id: user._id, cart_id: user.cart_id }
 
-routerProducts.get('/',checkIfIsAdmin, async (req,res) =>{
+    //tengo que traer el carrito
+    if(sanitizedUser.cart_id === undefined){
+        const res = await carts.createCart(idUser); 
+        console.log(res)
+        const cartId = await users.addCart(idUser,res._id);
+       console.log(cartId)
+    }
+
+   
 
     try {
-        const prod = new Product();
-        const productos = await prod.getAll()
-        res.status(200).render('table-productos', { productos })
+        const productos = await products.getAll()
+        res.status(200).render('table-productos', { productos , sanitizedUser })
     }
     catch (error) {
         res.status(500).send({
@@ -68,8 +84,8 @@ routerProducts.post('/' , function(req,res,next){
         console.log(body)
        
             try {
-                const prod =  new Product();
-                const newProd = await prod.save(body);
+                
+                const newProd = await products.save(body);
             
                 res.status(200).send({
                 status: 200,

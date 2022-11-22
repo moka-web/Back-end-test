@@ -8,7 +8,7 @@ class ContenedorMongoDb {
   async save(obj) {
     try {
       await connectMDB();
-      const objNuevo = new this.name({ ...obj });
+      const objNuevo = new this.name({ ...obj });  // porque pingo no funca 
       const objCreado = await objNuevo.save();
       // disconnectMDB();
       return objCreado._id;
@@ -26,6 +26,7 @@ class ContenedorMongoDb {
     } catch (error) {
       console.log(error);
     }
+  
   }
 
   async getAll() {
@@ -63,6 +64,7 @@ class ContenedorMongoDb {
       console.log(error);
     }
   }
+  
 }
 
 module.exports = ContenedorMongoDb;
