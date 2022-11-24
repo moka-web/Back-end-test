@@ -9,23 +9,23 @@ const routerProducts = express.Router();
 //routerProducts.use(checkIfIsAdmin)
 
 routerProducts.get('/', async (req,res) =>{
-    // const {body} = req;
-    // console.log(body)
-    // const user = await users.getById(JSON.stringify(req.user._id))
-    // console.log(user);
+
     const idUser = req.user._id;
     const user = await users.getById(idUser)
-    const sanitizedUser = { name: user.username, photo_url: user.photo_url, _id: user._id, cart_id: user.cart_id }
 
+    const sanitizedUser = { name: user.username, photo_url: user.photo_url, _id: user._id, cart_id: user.cart_id }
+    
+    console.log(sanitizedUser)
     //tengo que traer el carrito
-    if(sanitizedUser.cart_id === undefined){
+    if(sanitizedUser.cart_id == undefined){
         const res = await carts.createCart(idUser); 
         console.log(res)
         const cartId = await users.addCart(idUser,res._id);
        console.log(cartId)
     }
 
-   
+
+
 
     try {
         const productos = await products.getAll()

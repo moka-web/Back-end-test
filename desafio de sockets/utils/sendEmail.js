@@ -9,19 +9,23 @@ const sendEmail = async (to , subject , content) => {
          auth: {
              user: 'mokajua@gmail.com',
              pass: 'gfjywtkiadvxwyrw'
-         }
+         },
+         tls: {
+            rejectUnauthorized: false
+        }
      });
     try {
         const mailOptions = {
             from: 'mokajua@gmail.com',
             to: to,
             subject: subject,
-            html:`<h1 style="color: blue;">${content}</h1>`,
+            html:`<div>${content}</div>`,
          }
+
         const info = await transporter.sendMail(mailOptions)
         console.log({mando:info})
      } catch (error) {
-        console.log({error:error.message})
+        console.log({error})
      }
      
 }
