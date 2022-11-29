@@ -1,6 +1,7 @@
 const ContenedorMongoDb = require('../../contenedores/ContenedorMongoDb');
+const logger = require('../../../config/winston')
+const Cart = require('../../modelsMDB/schemaCart');
 
-const Cart = require('../../modelsMDB/schemaCart')
 
 class CartDaoMongoDB extends ContenedorMongoDb {
     constructor() {
@@ -11,8 +12,8 @@ class CartDaoMongoDB extends ContenedorMongoDb {
         try {
             const newCart = await this.save({ user_id: userId })
             return newCart;
-        } catch (err) {
-            console.error(err)
+        } catch (error) {
+            logger.error(error)
         }
     };
 
@@ -22,8 +23,8 @@ class CartDaoMongoDB extends ContenedorMongoDb {
             cart = await this.getItemById(id);
             cart.products.id(prodId).remove();
             await cart.save();
-        } catch (err) {
-            console.error(err)
+        } catch (error) {
+            logger.error(error)
         }
     };
 
@@ -31,8 +32,8 @@ class CartDaoMongoDB extends ContenedorMongoDb {
         let cart;
         try {
             cart = await this.name.findOne({ user_id: id });
-        } catch (err) {
-            console.error(err)
+        } catch (error) {
+            logger.error(error)
         }
         return cart ? cart : undefined;
     };
@@ -47,9 +48,9 @@ class CartDaoMongoDB extends ContenedorMongoDb {
             cart.products.push(product);
             await cart.save();
             return cart.products
-        } catch (err) {
-            console.error(err);
-            console.log(product)
+        } catch (error) {
+            logger.error(error)
+            logger.info(product)
         }
     };
 }

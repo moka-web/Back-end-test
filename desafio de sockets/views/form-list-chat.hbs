@@ -75,6 +75,35 @@
     </div>
   </form>
 </div>
+<div class="row">
+
+    <tbody >
+      <h1>carrito</h1>
+      
+          <div class="card col-md-4" style="width: 18rem; margin:1rem;">
+            <img class="card-img-top" src='' alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">nombre</h5>
+                <h5 class="card-title">precio</h5>
+                <p class="card-text">descripcion</p>
+                <p class="card-text">id</p>
+                
+            </div>
+          </div>
+     
+
+       <div class="mt-4">
+        //aca golpeo el endpoint para terminar el asunto
+        <form action="/api/carrito/{{cartid}}" method="POST">
+        <button class="btn btn-primary btn-sm" type="submit">Terminar compra</button>
+        </form>
+        </div>   
+
+    </tbody>
+    </table>
+  </div>  
+</div>
+</div>
 <script>
   const decodedJson = decodeURIComponent("{{{encodedJson}}}"); const dataN =
   JSON.parse(decodedJson);

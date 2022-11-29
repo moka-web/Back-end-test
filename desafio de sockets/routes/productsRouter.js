@@ -17,7 +17,7 @@ routerProducts.get('/', async (req,res) =>{
     
     console.log(sanitizedUser)
     //tengo que traer el carrito
-    if(sanitizedUser.cart_id == undefined){
+    if(!sanitizedUser.cart_id ){
         const res = await carts.createCart(idUser); 
         console.log(res)
         const cartId = await users.addCart(idUser,res._id);

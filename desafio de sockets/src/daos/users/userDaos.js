@@ -2,6 +2,7 @@
 const Usuarios = require('../../modelsMDB/schemaUsers')
 const {schemaProducts} = require('../../modelsMDB/schemaProducts');
 const ContenedorMongoDb = require('../../contenedores/ContenedorMongoDb');
+const logger = require('../../../config/winston')
  
 class UserDaoMongoDB extends ContenedorMongoDb {
     constructor() {
@@ -14,7 +15,7 @@ class UserDaoMongoDB extends ContenedorMongoDb {
             const user = await this.name.findOne({ email });
             return user;
         } catch (err) {
-            console.log(err);
+            logger.error(err);
         }
     };
 
@@ -23,7 +24,7 @@ class UserDaoMongoDB extends ContenedorMongoDb {
             const user = await this.name.findOneAndUpdate({ _id: userId }, { cart_id: cartId });
             return cartId;
         } catch (err) {
-            console.log(err);
+            logger.error(err);
         }
     };
 
@@ -32,7 +33,7 @@ class UserDaoMongoDB extends ContenedorMongoDb {
             const user = this.name.findOneAndUpdate({ cart_id: id }, { $unset: { cart_id: 1 } });
             return user;
         } catch (e) {
-            console.log(e);
+            logger.error(err);
         }
     };
 }
