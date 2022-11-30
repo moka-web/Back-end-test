@@ -119,13 +119,8 @@ app.use('/api/productos',routerProducts);
 app.use('/api/carrito',cartRouter);
 app.use('/logout',logOutRouter);
 
-// app.get('/logout', (req,res)=>{
-//   req.logout();
-//   res.redirect("/");
-// })
 
 io.on("connection", (socket) => {
-  console.log("Usuario Conectado" + socket.id);
   socket.on("mensaje", async (data) => {
     await chatBD.save({
       ...data,

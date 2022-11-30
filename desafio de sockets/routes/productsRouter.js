@@ -4,6 +4,7 @@ const express = require('express')
 const { checkIfIsAdmin } = require('../utils/checkIfIsAdmin.js');
 
 const {products, users, carts} = require('../src/daos/mainDaos');
+const logger = require('../config/winston.js');
 
 const routerProducts = express.Router();
 //routerProducts.use(checkIfIsAdmin)
@@ -15,16 +16,11 @@ routerProducts.get('/', async (req,res) =>{
 
     const sanitizedUser = { name: user.username, photo_url: user.photo_url, _id: user._id, cart_id: user.cart_id }
     
-    console.log(sanitizedUser)
-    //tengo que traer el carrito
+
     if(!sanitizedUser.cart_id ){
         const res = await carts.createCart(idUser); 
-        console.log(res)
         const cartId = await users.addCart(idUser,res._id);
-       console.log(cartId)
     }
-
-
 
 
     try {
@@ -72,17 +68,14 @@ routerProducts.get('/:id', async (req,res) =>{
 routerProducts.post('/' , function(req,res,next){
 
     if (req.query.admin ==  1) {
-        console.log(` admnin ${req.query.admin} is connected`)
-                
+                logger.info(` admnin ${req.query.admin} is connected`)
         next()
     } else {
         res.send({ error: "No admin"})
     }
 
 }, async (req,res) =>{
-        const body = req.body;
-        console.log(body)
-       
+        const body = req.body; 
             try {
                 
                 const newProd = await products.save(body);
@@ -94,8 +87,7 @@ routerProducts.post('/' , function(req,res,next){
                 },message:'producto cargado'})
 
             } catch (error) {
-                console.log(error.message)
-                
+                logger.error(error)
         }
 
 });
@@ -131,7 +123,7 @@ routerProducts.put('/:id', function (req,res,next){
 routerProducts.delete('/:id',function (req,res,next){
     
     if (req.query.admin ==  1) {
-        console.log(` admnin ${req.query.admin} is connected`)
+        logger.info(` admnin ${req.query.admin} is connected`)
         next()
     } else {res.send({ error: "No admin"})}
     
@@ -147,7 +139,8 @@ routerProducts.delete('/:id',function (req,res,next){
                 },message:'producto eliminado'})
             
         } catch (error) {
-            console.log(error.message)
+       
+            logger.error(error)
         }
     });
 

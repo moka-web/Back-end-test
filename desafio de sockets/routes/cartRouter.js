@@ -1,4 +1,5 @@
-const express = require('express')
+const express = require('express');
+const logger = require('../config/winston');
 
 const {products, users, carts} = require('../src/daos/mainDaos');
 const { checkIfIsAdmin } = require('../utils/checkIfIsAdmin');
@@ -63,7 +64,7 @@ cartRouter.get('/', async (req,res)=>{
             res.render('cartProducts',{allProducts,sanitizedUser,cartid})
         
     } catch (error) {
-        console.log(error)
+        logger.error(error)
         
     }
 } );
@@ -78,7 +79,7 @@ cartRouter.post('/:id/:idprod',async (req,res)=>{
         const addAproduct = await carts.addCartProduct(cartId,product)
         res.sendStatus(200)
     } catch (error) {
-        console.log(error.message)
+        logger.error(error)
     }
 })
 
@@ -92,8 +93,7 @@ cartRouter.delete('/:id',( req,res)=>{
             message:`el carrito con id ${id} fue eliminado`
         })
     } catch (error) {
-        console.log(error.message)
-        
+        logger.error(error)
     }
 
 })
@@ -114,7 +114,7 @@ cartRouter.delete('/:id/:idprod',async (req,res)=>{
         )
         
     } catch (error) {
-        console.log(error.message)
+        logger.error(error)
         
     }
     
