@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const logger = require('../config/winston');
 
 
 const sendEmail = async (to , subject , content) => {
@@ -23,9 +24,10 @@ const sendEmail = async (to , subject , content) => {
          }
 
         const info = await transporter.sendMail(mailOptions)
-        console.log({mando:info})
+        logger.info(info)
+        
      } catch (error) {
-        console.log({error})
+        logger.error(error)
      }
      
 }

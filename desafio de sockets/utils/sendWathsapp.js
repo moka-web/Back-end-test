@@ -1,6 +1,8 @@
+const logger = require('../config/winston');
 
 const accountSid = 'ACa3358f5965962ce0693aa48ea0323f43'; 
-const authToken = '8db75861f1941c38a3619e93ee4ef6d1'; 
+
+const authToken = '31ee56b19cad4e7ebc0fd55d3834b9c6'; 
 const client = require('twilio')(accountSid, authToken); 
  
 
@@ -11,13 +13,11 @@ const sendWhatsapp=async (body)=>{
       .create({ 
          body: body,
          from: 'whatsapp:+14155238886',       
-         to: 'whatsapp:+542281464044' 
+         to: 'whatsapp:+5492281464044' 
        }) 
-      .then(message => console.log(message.sid)) 
-      .done();
-        
+        logger.info('se envio el whatsapp')
     } catch (error) {
-        console.log(error)
+        logger.error(error)
     }
 }
 

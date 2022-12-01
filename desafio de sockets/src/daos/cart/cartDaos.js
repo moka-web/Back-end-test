@@ -40,10 +40,7 @@ class CartDaoMongoDB extends ContenedorMongoDb {
 
     addCartProduct = async (id, product) => {
         try {
-            console.log(id);
-            
             let cart = await this.getById({ _id: id });
-            console.log(cart);
             if (!cart.products) cart.products = [];
             cart.products.push(product);
             await cart.save();

@@ -24,21 +24,27 @@ cartRouter.use(checkIfIsAdmin)
 
 cartRouter.post('/:id', async(req,res)=>{
     
-    const cart = await carts.getById(req.params.id)
+    try {
+        const cart = await carts.getById(req.params.id)
        
 
-    await sendEmail('mokajua@gmail.com',
-    `Nuevo pedido de ${req.user.username} - ${req.user.email}`,
-    JSON.stringify(cart.products)
-    )
-
-    const newUser = await users.deleteCart(cart._id);
-    console.log(newUser)
-
-    await sendSms('se registro una nueva orden');
-    await sendWhatsapp('se registro una nueva orden')
+        await sendEmail('mokajua@gmail.com',
+        `Nuevo pedido de ${req.user.username} - ${req.user.email}`,
+        JSON.stringify(cart.products)
+        )
     
-    res.redirect('/')
+        const newUser = await users.deleteCart(cart._id);
+      
+    
+        await sendSms('se registro una nueva orden');
+        await sendWhatsapp('se registro una nueva orden')
+        
+        res.redirect('/')
+        
+    } catch (error) {
+        logger.error(error.message)
+    }
+   
 })
 
 
@@ -74,12 +80,13 @@ cartRouter.post('/:id/:idprod',async (req,res)=>{
     const cartId= req.params.id;
     const idprod=req.params.idprod;
     
-    const product = await products.getById(idprod)
     try {
+        const product = await products.getById(idprod)
         const addAproduct = await carts.addCartProduct(cartId,product)
         res.sendStatus(200)
+
     } catch (error) {
-        logger.error(error)
+        logger.error( `error al cargar producto al carrito ${error.message}`)
     }
 })
 

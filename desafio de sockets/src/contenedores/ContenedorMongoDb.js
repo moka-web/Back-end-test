@@ -21,7 +21,7 @@ class ContenedorMongoDb {
 
   async getById(id) {
     try {
-      await connectMDB();
+      //await connectMDB();
       const objEncontrado = await this.name.findById(id);
       // disconnectMDB();
       return objEncontrado;
@@ -33,7 +33,7 @@ class ContenedorMongoDb {
 
   async getAll() {
     try {
-      await connectMDB();
+      //await connectMDB();
       const objEncontrados = await this.name.find();
       // disconnectMDB();
       return objEncontrados;
