@@ -10,7 +10,7 @@ class ContenedorMongoDb {
   async save(obj) {
     try {
       await connectMDB();
-      const objNuevo = new this.name({ ...obj });  // porque pingo no funca 
+      const objNuevo = new this.name({ ...obj }); 
       const objCreado = await objNuevo.save();
       // disconnectMDB();
       return objCreado._id;
