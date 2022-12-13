@@ -8,14 +8,10 @@ const session= require('express-session')
 const MongoStore = require('connect-mongo');
 const passport = require('passport');
 const mongoose = require("mongoose");
-//
-const { chatsDaos: Chats } = require("./src/daos/mainDaos");
-const chatBD = new Chats();
-//
+const {chatBD} = require('./src/daos/mainDaos')()
 const app = express();
 const httpServer = require("http").createServer(app);
 const io = require("socket.io")(httpServer);
-
 const cluster = require('cluster');
 const routerProducts = require("./routes/productsRouter.js");
 const cartRouter = require("./routes/cartRouter.js");
@@ -45,17 +41,22 @@ if (mode == 'cluster' && cluster.isMaster) {
   httpServer.on("error", (error) => console.log(`Error en el servidor ${error}`));
   console.log(`Worker ${process.pid} started`);
  }
+
+// aca deberia tener solamente un if para la conexion 
 mongoose.connect(  `mongodb+srv://${MUSER}:${MPASS}@cluster0.818d8oc.mongodb.net/test `,
 { 
-  useNewUrlParser: true
+  useNewUrlParser: true,
+  useUniFiedTopology: true,
 })   
 .then(() => console.log("Connected to Mongo Atlas"));
+
+
 
 app.use(express.static(__dirname + '/public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//configuracion session cookies
+//configuracion session cookies guardadasen en mongo
 app.use(
   session(
       {   
@@ -71,7 +72,8 @@ app.use(
           rolling: true,
           resave:true,
           saveUninitialized:false,
-          cookie:{maxAge: 86400000,
+          cookie:{
+            maxAge: 86400000,
             httpOnly: false,
             secure: false,}
 

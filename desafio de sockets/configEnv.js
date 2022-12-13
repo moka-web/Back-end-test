@@ -20,5 +20,9 @@ const processId = process.pid
 const folderPath =process.cwd()
 const maxRSS = process.resourceUsage().maxRSS + " bytes"
 const numOfProcess = numOfcpus
+const persistencia = process.env.PERSISTENCIA
 
-module.exports = {PORT, MPASS,MUSER,oS,nodeV,paTh,processId,folderPath,maxRSS,numOfProcess,mode}
+
+
+
+module.exports = {PORT, MPASS,MUSER,oS,nodeV,paTh,processId,folderPath,maxRSS,numOfProcess,mode,persistencia}

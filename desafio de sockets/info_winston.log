@@ -18,3 +18,73 @@
 {"level":"error","message":"Cannot read properties of null (reading 'products')"}
 {"level":"error","message":"Cannot read properties of null (reading 'products')"}
 {"level":"error","message":"Cannot read properties of null (reading 'products')"}
+{"code":20003,"level":"error","moreInfo":"https://www.twilio.com/docs/errors/20003","status":401}
+{"level":"error"}
+{"level":"error"}
+{"level":"error"}
+{"level":"error"}
+{"level":"error"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'getById')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'getById')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'getById')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'getById')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'getById')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'getById')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'getById')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'getById')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'getById')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'getById')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'getById')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'getById')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'getById')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'getById')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'getById')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'getById')"}
+{"level":"error","message":"error al cargar producto al carrito Cannot read properties of undefined (reading 'getById')"}
+{"level":"error","message":"error al cargar producto al carrito Cannot read properties of undefined (reading 'getById')"}
+{"level":"error","message":"error al cargar producto al carrito Cannot read properties of undefined (reading 'getById')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'products')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'products')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'products')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'products')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'products')"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'products')"}
+{"level":"error","message":" aca en el post delete Cannot read properties of undefined (reading 'products')"}
+{"level":"error","message":" aca en el post delete Cannot read properties of undefined (reading 'products')"}
+{"level":"error","message":" aca en el get Cannot read properties of undefined (reading '_id')"}
+{"level":"error","message":" aca en el get Cannot read properties of undefined (reading '_id')"}
+{"level":"error","message":" aca en el post Cannot read properties of undefined (reading 'products')"}
+{"level":"error","message":"error al cargar producto al carrito this.getItemById is not a function"}
+{"level":"error","message":"error al cargar producto al carrito Cannot read properties of undefined (reading 'products')"}
+{"level":"error","message":"error al cargar producto al carrito Cannot read properties of undefined (reading 'products')"}
+{"level":"error","message":"error al cargar producto al carrito Cannot read properties of undefined (reading 'products')"}
+{"level":"error","message":"error al cargar producto al carrito Cannot read properties of undefined (reading 'products')"}
+{"level":"error","message":"error al cargar producto al carrito Cannot read properties of undefined (reading 'products')"}
+{"level":"error","message":"error al cargar producto al carrito Cannot read properties of undefined (reading 'products')"}
+{"level":"error","message":"error al cargar producto al carrito Cannot read properties of undefined (reading 'products')"}
+{"level":"error","message":"error al cargar producto al carrito Cannot read properties of undefined (reading 'products')"}
+{"level":"error","message":"error al cargar producto al carrito Cannot read properties of undefined (reading 'products')"}
+{"level":"error","message":" aca en el get Cannot read properties of undefined (reading '_id')"}
+{"level":"error","message":" aca en el get Cannot read properties of undefined (reading '_id')"}
+{"level":"error","message":" aca en el get Cannot read properties of undefined (reading '_id')"}
+{"level":"error","message":" aca en el get Cannot read properties of undefined (reading '_id')"}
+{"level":"error","message":" aca en el get Cannot read properties of undefined (reading '_id')"}
+{"level":"error","message":" aca en el get Cannot read properties of undefined (reading '_id')"}
+{"code":20003,"level":"error","moreInfo":"https://www.twilio.com/docs/errors/20003","status":401}
+{"level":"error","message":" aca en el post Cannot read properties of null (reading 'products')"}
+{"code":20003,"level":"error","moreInfo":"https://www.twilio.com/docs/errors/20003","status":401}
+{"level":"error","message":" aca en el post Cannot read properties of null (reading 'products')"}
+{"level":"error","message":" aca en el post Cannot read properties of null (reading 'products')"}
+{"code":20003,"level":"error","moreInfo":"https://www.twilio.com/docs/errors/20003","status":401}
+{"level":"error","message":" aca en el post Cannot read properties of null (reading 'products')"}
+{"code":20003,"level":"error","moreInfo":"https://www.twilio.com/docs/errors/20003","status":401}
+{"level":"error","message":" aca en el post Cannot read properties of null (reading 'products')"}
+{"code":20003,"level":"error","moreInfo":"https://www.twilio.com/docs/errors/20003","status":401}
+{"level":"error","message":" aca en el post Cannot read properties of null (reading 'products')"}
+{"level":"error","message":" aca en el post Cannot read properties of null (reading 'products')"}
+{"code":20003,"level":"error","moreInfo":"https://www.twilio.com/docs/errors/20003","status":401}
+{"level":"error","message":" aca en el post Cannot read properties of null (reading 'products')"}
+{"level":"error","message":" aca en el get Cannot read properties of undefined (reading '_id')"}
+{"code":20003,"level":"error","moreInfo":"https://www.twilio.com/docs/errors/20003","status":401}
+{"level":"error","message":" aca en el get Cannot read properties of null (reading '_id')"}
+{"code":20003,"level":"error","moreInfo":"https://www.twilio.com/docs/errors/20003","status":401}

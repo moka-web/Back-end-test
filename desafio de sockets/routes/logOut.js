@@ -1,17 +1,10 @@
 const express = require('express');
 const logger = require('../config/winston');
+const { logOut } = require('../controllers/auth');
 const logOutRouter = express.Router();
 
 
-logOutRouter.get('/', (req,res)=>{
-    try {
-        req.logout();
-    res.redirect("/");
-    } catch (error) {
-        logger.error(error)
-    }
-    
-  })
+logOutRouter.get('/', logOut)
   
 
   module.exports = logOutRouter ; 

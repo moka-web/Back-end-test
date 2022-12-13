@@ -1,20 +1,7 @@
 const express = require('express');
 const routerInfo = express.Router()
-const {PORT, oS, nodeV, paTh, processId, folderPath, maxRSS, numOfProcess} = require('../configEnv.js')
+const { getInfo } = require('../controllers/info.js');
 
-routerInfo.get('/',(req,res)=>{
-    const data = {
-          os:  oS ,
-          nodeVersion: nodeV,
-          path: paTh,
-          processId: processId,
-          folderPath: folderPath,
-          maxRSS: maxRSS, 
-          procesos:numOfProcess,
-          puerto:PORT
-    }
-   
-    res.send(data)
-  })
+routerInfo.get('/',getInfo)
   
   module.exports = routerInfo ; 
