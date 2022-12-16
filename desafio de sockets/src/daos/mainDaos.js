@@ -4,12 +4,13 @@ const chatsDaos = require('./chats/ChatsDaoMongoDb');
 const {ProductsDaoMongoDB} = require('./products/productDaos')
 const productsDaoFiles = require('./products/ProductsDaoFiles')
 const CartDaoFiles= require('./cart/CartDaoFiles')
-const UserDaoMongoDB = require('./users/userDaos')
+const UserDaoMongoDB = require('./users/userDaos');
+const { persistencia } = require("../../configEnv");
 
 
 const getPersistency= ()=>{
 
-  const persist = process.env.PERSIST ?? "mongo";
+  const persist = persistencia;
   console.log(process.env.PERSIST)
 
     switch (persist) {

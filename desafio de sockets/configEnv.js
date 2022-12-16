@@ -20,7 +20,7 @@ const processId = process.pid
 const folderPath =process.cwd()
 const maxRSS = process.resourceUsage().maxRSS + " bytes"
 const numOfProcess = numOfcpus
-const persistencia = process.env.PERSISTENCIA
+const persistencia = process.env.PERSIST || "mongo"
 
 
 
