@@ -59,7 +59,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   session(
       {   
-          //store: new filestore({path:"./sessions", ttl:300, retries:0}), //esto es para filestore
           store: MongoStore.create({
               mongoUrl: "mongodb+srv://TomasJuarez:432373427473@cluster0.818d8oc.mongodb.net/test",
               mongoOptions:{
@@ -79,7 +78,6 @@ app.use(
   )
 )
 app.use(function (req, res, next) {
-  //console.log(req.session);
   req.session._garbage = Date();
   req.session.touch();
   return next();
@@ -119,13 +117,11 @@ app.use('/api/productos',routerProducts);
 app.use('/api/carrito',cartRouter);
 app.use('/logout',logOutRouter);
 
-// app.get('/logout', (req,res)=>{
-//   req.logout();
-//   res.redirect("/");
-// })
+
 
 io.on("connection", (socket) => {
   console.log("Usuario Conectado" + socket.id);
+  
   socket.on("mensaje", async (data) => {
     await chatBD.save({
       ...data,
