@@ -82,10 +82,10 @@ async function PutProduct (req,res){
     if (req.query.admin ==  1) {
         console.log(` admnin ${req.query.admin} is connected`)
         const id = req.params.id;
-    const body = req.body;
+        const body = req.body;
     try {
-        const prod = new Product()
-        const updatedproduct= await prod.update( id , body )
+        
+        const updatedproduct= await products.modify( id , body )
         res.status(200).send({
             status: 200,
             data: {
@@ -110,8 +110,8 @@ async function deleteProduct (req,res){
         logger.info(` admnin ${req.query.admin} is connected`)
         const id = req.params.id;
         try {
-            const prod = new Product();
-            const deleted = await prod.deleteOne(id);
+           
+            const deleted = await products.deleteById(id)
             res.status(200).send({
                 status: 200,
                 data: {
@@ -120,7 +120,7 @@ async function deleteProduct (req,res){
             
         } catch (error) {
        
-            logger.error(error)
+            logger.error(`deleteProduct:${error.message}`)
         }
         
     } else {res.send({ error: "No admin"})}

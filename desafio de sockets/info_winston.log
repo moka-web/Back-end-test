@@ -88,3 +88,16 @@
 {"code":20003,"level":"error","moreInfo":"https://www.twilio.com/docs/errors/20003","status":401}
 {"level":"error","message":" aca en el get Cannot read properties of null (reading '_id')"}
 {"code":20003,"level":"error","moreInfo":"https://www.twilio.com/docs/errors/20003","status":401}
+{"level":"error","message":" aca en el post Cannot read properties of null (reading 'products')"}
+{"level":"error","message":" aca en el post Cannot read properties of null (reading 'products')"}
+{"level":"error","message":" aca en el post Cannot read properties of null (reading 'products')"}
+{"level":"error","message":" aca en el post Cannot read properties of null (reading 'products')"}
+{"code":20003,"level":"error","moreInfo":"https://www.twilio.com/docs/errors/20003","status":401}
+{"level":"error","message":" aca en el post Cannot read properties of null (reading 'products')"}
+{"level":"error","message":" aca en el post Cannot read properties of null (reading 'products')"}
+{"level":"error"}
+{"level":"error"}
+{"level":"error"}
+{"level":"error","message":"deleteProduct:Product is not defined"}
+{"level":"error","message":"deleteProduct:products.deleteOne is not a function"}
+{"code":20003,"level":"error","moreInfo":"https://www.twilio.com/docs/errors/20003","status":401}

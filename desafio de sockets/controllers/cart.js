@@ -27,7 +27,7 @@ async function getCart (req,res){
             res.render('cartProducts',{allProducts,sanitizedUser,cartid})
         
     } catch (error) {
-        logger.error(` aca en el get ${error.message}`)
+        logger.error(` getCart : ${error.message}`)
         
     }
 
@@ -46,7 +46,7 @@ async function addAproductToCart (req,res){
         res.sendStatus(200)
 
     } catch (error) {
-        logger.error( `error al cargar producto al carrito ${error.message}`)
+        logger.error( ` addAproductToCart: ${error.message}`)
     }
 }
 
@@ -60,7 +60,7 @@ async function deleteCartById (req,res){
             message:`el carrito con id ${id} fue eliminado`
         })
     } catch (error) {
-        logger.error(error)
+        logger.error(`deleteCartById : ${error.message}`)
     }
 }
 
@@ -80,34 +80,33 @@ async function deleteCartProduct (req,res){
         )
         
     } catch (error) {
-        logger.error(error)
+        logger.error(`deleteCartProduct:${error.message}`)
         
     }
 }
+
 
 async function finishBuying(req,res){
     try {
         const cart = await carts.getById(req.params.id)
        const user = await users.getById(req.user._id)
-        console.log(user)
+        
         await sendEmail('mokajua@gmail.com',
         `Nuevo pedido de ${req.user.username} - ${req.user.email}`,
         JSON.stringify(cart.products)
         )
         
-        if (process.env.PERSIST !== "file") {
-            const newUser = await users.deleteCart(cart._id);
-        }
-       
-      
     
+        const newUser = await users.deleteCart(cart._id);
+       
+       
         await sendSms('se registro una nueva orden');
         await sendWhatsapp('se registro una nueva orden')
         
         res.redirect('/')
         
     } catch (error) {
-        logger.error(` aca en el post ${error.message}`)
+        logger.error(` terminar compra ${error.message}`)
     }
 }
 

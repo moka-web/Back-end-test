@@ -14,8 +14,7 @@
                 <h5 class="card-title">{{this.name}}</h5>
                 <h5 class="card-title">{{this.price}}</h5>
                 <p class="card-text">{{this.description}}</p>
-                <h1 style="color: green;">{{../sanitizedUser.cart_id}}</h1>
-                <form action="/api/carrito/{{../sanitizedUser.cart_id}}/{{this._id}}" method="post">
+                <form action="/api/carrito/{{../sanitizedUser.cart_id}}/productos/{{this._id}}" method="post">
                   <button type="submit" class="btn btn-primary btn-sm" >Comprar</button>
                 </form>
             </div>

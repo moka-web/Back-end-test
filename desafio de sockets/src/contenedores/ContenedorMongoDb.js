@@ -47,7 +47,7 @@ class ContenedorMongoDb {
       await this.name.findByIdAndDelete(id);
       return objEncontrado;
     } catch (error) {
-      logger.error(error);
+      logger.error(error.message);
     }
   }
 
