@@ -17,6 +17,4 @@ routerProducts.put('/:id', PutProduct);
 
 routerProducts.delete('/:id',deleteProduct);
 
-
-
 module.exports = routerProducts;

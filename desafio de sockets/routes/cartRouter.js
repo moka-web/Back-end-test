@@ -8,7 +8,7 @@ cartRouter.use(checkIfIsAdmin)
 cartRouter.get('/', getCart);
 cartRouter.post('/:id/productos/:idprod',addAproductToCart)
 cartRouter.delete('/:id',deleteCartById)
-cartRouter.delete('/:id/:idprod',deleteCartProduct)
+cartRouter.delete('/:id/productos/:idprod',deleteCartProduct)
 cartRouter.post('/:id/productos', finishBuying)
 
 module.exports= cartRouter;

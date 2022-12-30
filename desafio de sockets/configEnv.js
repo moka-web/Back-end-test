@@ -7,8 +7,8 @@ dotenv.config()
 //se pasa por console node server.js --PORT +num
 const args = parseArgs(process.argv.slice(2))
 
-const mode = args.MODE || process.env.MODE 
-console.log(mode)
+const mode = args.MODE || process.env.MODE || "fork"
+
 
 const PORT= args.PORT || process.env.PORT || 8080;
 const MPASS = process.env.MONGOATLAS;

@@ -10,10 +10,11 @@ const sendWhatsapp = require('../utils/sendWathsapp');
 async function getCart (req,res){
     try {
         const user = await users.getById(req.user._id);
-        console.log(user)
+       
         const sanitizedUser = { name: user.username, photo_url: user.photo_url, _id: user._id, cart_id: user.cart_id }
          
         const getCart =await carts.getById(sanitizedUser.cart_id)
+        
         const cartid = getCart._id;
 
         const allProducts = await getCart.products.map((product) => ({
@@ -21,8 +22,10 @@ async function getCart (req,res){
             photo_url: product.photo_url,
             description: product.description,
             price: product.price,
-            _id:JSON.stringify(product._id)
+            _id:product._id,
+            quantity:product.quantity
         }));
+
             
             res.render('cartProducts',{allProducts,sanitizedUser,cartid})
         
@@ -36,14 +39,34 @@ async function getCart (req,res){
 async function addAproductToCart (req,res){
     const cartId= req.params.id;
     const idprod=req.params.idprod;
-    console.log(idprod)
-    console.log(cartId)
-    
+  
     try {
         const product = await products.getById(idprod)
-        
-        const addAproduct = await carts.addCartProduct(cartId,product)
-        res.sendStatus(200)
+        const user = await users.getById(req.user._id); 
+        const userCart = {cart_id: user.cart_id }
+        const cart =await carts.getById(userCart.cart_id)
+
+        //revisar aca que onda 
+        if(!product.quantity){
+            await products.modify(idprod,{quantity:1})
+        }else 
+        if(cart.products.some(e=>e._id == idprod)){
+
+           
+
+            const productToAdd = cart.products.find(e=>e._id==idprod)
+            const productQuant= {
+            quantity:productToAdd.quantity
+            }
+
+            const addAproduct = await carts.modifyProductCart(cartId,idprod,productQuant)
+            res.redirect("/api/productos")
+
+        }else{
+            const addAproduct = await carts.addCartProduct(cartId,product)
+            res.redirect("/api/productos")
+        }
+
 
     } catch (error) {
         logger.error( ` addAproductToCart: ${error.message}`)
@@ -65,19 +88,22 @@ async function deleteCartById (req,res){
 }
 
 async function deleteCartProduct (req,res){
+
     const cartId = req.params.id;
     const productId= req.params.idprod;
     try {
-        const deleteProductoFromCart = await carts.deleteCartProduct(cartId,productId)
-        res.status(200).send(
-            {
-                status:200,
-                data:{
-                    deleteProductoFromCart
-                },
-                message:'el producto fue eliminado del carrito'
-            }
-        )
+        const cart = await carts.getById(cartId);
+        const prodInCart= cart.products.find(e=>e._id == productId);
+        const prodquant = prodInCart.quantity;
+
+        if(prodquant > 1){
+            await carts.deleteByOne(cartId,productId,prodquant)
+            res.redirect('/api/carrito')
+        }else{
+            const deleteProductoFromCart = await carts.deleteCartProduct(cartId,productId)
+            res.redirect('/api/carrito')
+        }
+       
         
     } catch (error) {
         logger.error(`deleteCartProduct:${error.message}`)

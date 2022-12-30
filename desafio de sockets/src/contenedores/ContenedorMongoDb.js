@@ -12,7 +12,7 @@ class ContenedorMongoDb {
       const objNuevo = new this.name({ ...obj }); 
       const objCreado = await objNuevo.save();
     
-      return objCreado._id;
+      return objCreado;
     } catch (error) {
       logger.error(error);
     }

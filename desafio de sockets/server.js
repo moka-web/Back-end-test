@@ -1,4 +1,7 @@
 const express = require("express");
+
+const methodOverride = require('method-override')
+
 const { engine } = require("express-handlebars");
 const normalizr = require("normalizr");
 const normalize = normalizr.normalize;
@@ -23,44 +26,52 @@ const initializePassport = require('./config/passport');
 const signUpRouter = require("./routes/signUp.js");
 const loginRouter = require("./routes/login.js");
 const logOutRouter = require("./routes/logOut.js");
-//////clusters con forever
+const logger = require("./config/winston.js");
+
 
 if (mode == 'cluster' && cluster.isMaster) {
   console.log('-------cluster-mode----------')
-  console.log(`Master ${process.pid} is running`);
+  logger.info(`cluster Masters ${process.pid} is running`);
   for (let i = 0; i < numOfcpus; i++) {
+    console.log(`worker ${worker.process.pid} up`)
     cluster.fork();
+    mongoose.connect(  `mongodb+srv://${MUSER}:${MPASS}@cluster0.818d8oc.mongodb.net/test `,
+    { 
+      useNewUrlParser: true,
+      useUniFiedTopology: true,
+    }) ;
   }
   cluster.on('exit', (worker, code, signal) => {
     cluster.fork();
     console.log(`worker ${worker.process.pid} died`);
   });
-} else {
+
+} else if (mode == 'fork' || undefined){
   console.log('----------fork mode--------')
   httpServer.listen(PORT, () => console.log(` worker ${process.pid} server listenin on port ${PORT}`));
   httpServer.on("error", (error) => console.log(`Error en el servidor ${error}`));
   console.log(`Worker ${process.pid} started`);
- }
-
-// aca deberia tener solamente un if para la conexion 
-mongoose.connect(  `mongodb+srv://${MUSER}:${MPASS}@cluster0.818d8oc.mongodb.net/test `,
+  mongoose.connect(  `mongodb+srv://${MUSER}:${MPASS}@cluster0.818d8oc.mongodb.net/test `,
 { 
   useNewUrlParser: true,
   useUniFiedTopology: true,
 })   
 .then(() => console.log("Connected to Mongo Atlas"));
+ }
 
-
+  
 
 app.use(express.static(__dirname + '/public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//configuracion session cookies guardadasen en mongo
+app.use(methodOverride('_method'))
+
+
 app.use(
   session(
       {   
-          //store: new filestore({path:"./sessions", ttl:300, retries:0}), //esto es para filestore
+          
           store: MongoStore.create({
               mongoUrl: "mongodb+srv://TomasJuarez:432373427473@cluster0.818d8oc.mongodb.net/test",
               mongoOptions:{
@@ -81,7 +92,7 @@ app.use(
   )
 )
 app.use(function (req, res, next) {
-  //console.log(req.session);
+  
   req.session._garbage = Date();
   req.session.touch();
   return next();

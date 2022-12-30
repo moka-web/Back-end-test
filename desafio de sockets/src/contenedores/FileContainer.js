@@ -1,4 +1,5 @@
 const fs = require("fs");
+const logger = require("../../config/winston");
 
 class FileContainer {
     constructor(filename) {
@@ -17,14 +18,14 @@ class FileContainer {
     };
 
     getAll = async () => {
-        console.log("HELO", this.filename);
+       
         let arr;
         try {
             const file = await fs.promises.readFile(this.filename, "utf-8");
             if (!file) arr = [];
             else arr = JSON.parse(file);
         } catch (err) {
-            console.log(err)
+           logger.error(err)
         }
         return arr;
     };
@@ -35,7 +36,7 @@ class FileContainer {
         let item = arr.find((o) => o._id == id);
         return item;
         } catch (error) {
-            console.log(error)
+            logger.error(error)
         }
         
     };
@@ -53,7 +54,7 @@ class FileContainer {
     modify = async (id, newItem) => {
         try {
             const itemArr = await this.getAll();
-            console.log("HOLI");
+           
             const newArr = itemArr.map((item) => {
                 if (id !== item._id) return item;
                 else {
@@ -63,7 +64,7 @@ class FileContainer {
             this.saveItems(newArr);
             return;
         } catch (error) {
-            console.log(error.message)
+            logger.error(error.message)
         }
       
     };

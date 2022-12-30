@@ -1,6 +1,7 @@
 const ContenedorMongoDb = require('../../contenedores/ContenedorMongoDb');
 const logger = require('../../../config/winston')
 const Cart = require('../../modelsMDB/schemaCart');
+const { products } = require('../../modelsMDB/schemaProducts');
 
 
 class CartDaoMongoDB extends ContenedorMongoDb {
@@ -18,13 +19,16 @@ class CartDaoMongoDB extends ContenedorMongoDb {
     };
 
     deleteCartProduct = async (id, prodId) => {
-        let cart;
         try {
-            cart = await this.getItemById(id);
-            cart.products.id(prodId).remove();
-            await cart.save();
+            
+            let cart = await Cart.findOne({ _id: id })
+            let products = cart.products
+            let newProds = products.filter(e=>e._id != prodId)
+            let newCart = await Cart.findByIdAndUpdate({_id:id},{products:newProds})
+           
+           return await Cart.findOne({ _id: id })
         } catch (error) {
-            logger.error(error)
+            logger.error(`deleteCartProduct: ${error.message}`)
         }
     };
 
@@ -50,6 +54,33 @@ class CartDaoMongoDB extends ContenedorMongoDb {
             logger.info(product)
         }
     };
+
+    modifyProductCart = async(id,prodId,setedProd)=>{
+        try {
+           await this.name.findOneAndUpdate(
+            {"_id":id, "products._id":prodId },
+            {"$set": {"products.$.quantity": setedProd.quantity +1}
+        
+        } )
+        } catch (error) {
+            logger.error(` modifyProductCart  ${error.message}`)
+        }
+
+    }
+
+    deleteByOne= async (id,prodId,prodquant)=>{
+
+    try {
+        await this.name.findOneAndUpdate(
+        {"_id":id, "products._id":prodId },
+        {"$set": {"products.$.quantity": prodquant -1}
+    
+    } )
+    } catch (error) {
+       logger.error(` deleteByOne ${error.message}`)
+    }}
+
+
 }
 
 module.exports = CartDaoMongoDB;

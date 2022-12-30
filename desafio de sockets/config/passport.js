@@ -3,7 +3,8 @@ const {users} = require('../src/daos/mainDaos');
 const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 const sendEmail = require("../utils/sendEmail");
-const Usuarios = require("../src/modelsMDB/schemaUsers")
+const Usuarios = require("../src/modelsMDB/schemaUsers");
+const logger = require('./winston');
 
 
 
@@ -15,12 +16,12 @@ initialize = (passport) =>{
       if (err) return done(err);
 
       if (!user) {
-        console.log("User Not Found with username " + username);
+        logger.info("User Not Found with username " + username);
         return done(null, false);
       }
 
       if (!isValidPassword(user, password)) {
-        console.log("Invalid Password");
+        logger.info("Invalid Password");
         return done(null, false);
       }
 
@@ -36,16 +37,16 @@ passport.use(
       passReqToCallback: true,
     },
     (req, username, password, done) => {
-      console.log(req.body)
+      
 
       Usuarios.findOne({ username: username }, function (err, user) {
         if (err) {
-          console.log("Error in SignUp: " + err);
+          logger.info("Error in SignUp: " + err);
           return done(err);
         }
 
         if (user) {
-          console.log("User already exists");
+          logger.info("User already exists");
           return done(null, false);
         }
 
@@ -59,12 +60,12 @@ passport.use(
         };
         Usuarios.create(newUser, (err, userWithId) => {
           if (err) {
-            console.log("Error in Saving user: " + err);
+            logger.info("Error in Saving user: " + err);
             return done(err);
           }
 
-          console.log(user);
-          console.log("User Registration succesful");
+          
+          logger.info("User Registration succesful");
 
           sendEmail('mokajua@gmail.com',"Nuevo Registro",JSON.stringify(newUser,null,2))
 

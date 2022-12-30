@@ -7,14 +7,14 @@ async function getProducts (req,res){
     const user = await users.getById(idUser)
    
     const sanitizedUser = { name: user.username, photo_url: user.photo_url, _id: user._id, cart_id: user.cart_id }
-    console.log(sanitizedUser)
+    
     
     if (process.env.PERSIST !== "file") {
         if(!sanitizedUser.cart_id ){
-            console.log('entra ')
+            logger.info('entra ')
             const res = await carts.createCart(idUser); 
             const cartId = await users.addCart(idUser,res._id);
-           console.log(cartId)
+         
         }
     }
 
@@ -93,7 +93,7 @@ async function PutProduct (req,res){
             },message:'producto cargado'})
         
     } catch (error) {
-        console.log(error.message)
+       logger.error(error.message)
         
     }
 
