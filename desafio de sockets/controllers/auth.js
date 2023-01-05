@@ -1,7 +1,7 @@
 
 
 async function postLogin (req,res){
-    res.redirect('/')
+    res.redirect('/api/productos')
 }
 
 async function getSignUp (req,res){
@@ -11,7 +11,7 @@ async function getSignUp (req,res){
 async function postSignUp(req,res){
     const {username} = req.user
     req.session.username = username;
-    res.redirect('/')
+    res.redirect('/api/productos')
 }
 
 async function logOut (req,res){

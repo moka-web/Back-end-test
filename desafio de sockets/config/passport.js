@@ -1,5 +1,5 @@
 const {isValidPassword,createHash} = require('../utils/passwordValidates');
-const {users} = require('../src/daos/mainDaos');
+const {users} = require('../src/daos/mainDaos')()
 const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 const sendEmail = require("../utils/sendEmail");
@@ -8,15 +8,19 @@ const logger = require('./winston');
 
 
 
+
 initialize = (passport) =>{
 
     passport.use("login",
-  new localStrategy((username,password,done)=>{
-    Usuarios.findOne({ username }, (err, user) => {
+    new localStrategy({ usernameField: "email" },
+    
+    (email,password,done)=>{
+
+    Usuarios.findOne({ email }, (err, user) => {
       if (err) return done(err);
 
       if (!user) {
-        logger.info("User Not Found with username " + username);
+        logger.info("User Not Found with username " + email);
         return done(null, false);
       }
 
@@ -29,6 +33,48 @@ initialize = (passport) =>{
     })
   })
 );
+
+
+
+// initialize = (passport) => {
+//   passport.use(
+//       "login",
+//       new LocalStrategy(
+//           { usernameField: "email" },
+
+//           async (email, password, done) => {
+//               try {
+//                   const user = await users.getByEmail(email);
+//                   if (!user)
+//                       return done(null, false, {
+//                           message: "Usuario no encontrado",
+//                       });
+
+//                   if (!verifyPassword(password, user))
+//                       return done(null, false, {
+//                           message: "Password incorrecto",
+//                       });
+
+//                   return done(null, user);
+//               } catch (err) {
+//                   return done(err);
+//               }
+//           }
+//       )
+//   );
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 passport.use(
   "signup",

@@ -1,0 +1,23 @@
+<div class="mt-4 container">
+    <a href="/api/productos/">productos</a>
+   <a href="/api/carrito/">carrito</a>
+   <a href="/">home</a>
+   <h1 style="color: #ffffff;">{{sanitizedUser.cart_id}}</h1>
+
+  <div class="d-flex flex-row">
+  
+            <img class="p-2 " style="width: 30vw;" src={{product.photo_url}} alt="Card image cap">
+            <div class="p-2">
+                <h5 class="card-title">{{product.name}}</h5>
+                <p class="card-text">{{product.description}}</p>
+                <br>
+                 <h5 class="card-title">${{product.price}}</h5>
+                 <br>
+                <form action="/api/carrito/{{sanitizedUser.cart_id}}/productos/{{product._id}}" method="post">
+                  <button type="submit" class="btn btn-primary btn-sm" >Comprar</button>
+                </form>
+                
+            </div>
+        
+  </div>  
+</div>

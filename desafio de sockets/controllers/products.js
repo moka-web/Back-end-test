@@ -11,7 +11,7 @@ async function getProducts (req,res){
     
     if (process.env.PERSIST !== "file") {
         if(!sanitizedUser.cart_id ){
-            logger.info('entra ')
+            logger.info('se crea el carrito')
             const res = await carts.createCart(idUser); 
             const cartId = await users.addCart(idUser,res._id);
          
@@ -33,23 +33,26 @@ async function getProducts (req,res){
 
 async function getProductById (req,res){
     const id = req.params.id;
+   
+    const idUser = req.user._id;
+   
     try {
-        const product_id = await products.getById(id)
+        const product= await products.getById(id)
+        
+        const user = await users.getById(idUser)
+        const sanitizedUser = { 
+            name: user.username, 
+            photo_url: user.photo_url, 
+            _id: user._id, 
+            cart_id: user.cart_id }
 
-        res.status(200).send({
-            status: 200,
-            data: {
-                product_id,
-            },
-            message:'producto encontrado'
-            })
+      
+
+        res.status(200).render('productDetail',{product,sanitizedUser})
     }
         
     catch (error) {
-        res.status(500).send({
-            status: 500,
-            message: error.message
-        })
+       logger.error(`getProductById${error.message}`)
     }
 
 }

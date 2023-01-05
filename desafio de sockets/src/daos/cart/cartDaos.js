@@ -69,7 +69,6 @@ class CartDaoMongoDB extends ContenedorMongoDb {
     }
 
     deleteByOne= async (id,prodId,prodquant)=>{
-
     try {
         await this.name.findOneAndUpdate(
         {"_id":id, "products._id":prodId },
@@ -79,8 +78,6 @@ class CartDaoMongoDB extends ContenedorMongoDb {
     } catch (error) {
        logger.error(` deleteByOne ${error.message}`)
     }}
-
-
 }
 
 module.exports = CartDaoMongoDB;

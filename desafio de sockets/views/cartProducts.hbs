@@ -11,8 +11,8 @@
                 <h5 class="card-title">{{this.name}}</h5>
                 <h5 class="card-title">{{this.price}}</h5>
                 <p class="card-text">{{this.description}}</p>
-                <p class="card-text">{{this._id}}</p>
-                <p class="card-text">{{this.quantity}}</p>
+                
+                <p class="card-text">unidades : {{this.quantity}}</p>
                 <form action="/api/carrito/{{../sanitizedUser.cart_id}}/productos/{{this._id}}/?_method=DELETE" method="POST">
                   <button type="submit" class="btn btn-primary btn-sm" >borrar</button>
                 </form>
