@@ -2,7 +2,10 @@
   <h1 class="text-center fw-bold mb-4">Listado de productos</h1>
 
    <a href="/api/carrito/">carrito</a>
-   <a href="/">home</a>
+   <a href="/">soporte</a>
+   <a href="/api/productos">productos</a>
+   <a href="/api/productos/categoria/running">running</a>
+   <a href="/api/productos/categoria/moda">moda</a>
    <h1 style="color: white;">{{sanitizedUser.cart_id}}</h1>
 
   <div class="row">
@@ -12,7 +15,9 @@
             <img class="card-img-top" src={{this.photo_url}} alt="Card image cap">
             <div class="card-body">
                 <h5 class="card-title">{{this.name}}</h5>
+                <h5 class="card-title">{{this.category}}</h5>
                 <h5 class="card-title">${{this.price}}</h5>
+                <span>id:{{this._id}}</span>
                
                 <form action="/api/carrito/{{../sanitizedUser.cart_id}}/productos/{{this._id}}" method="post">
                   <button type="submit" class="btn btn-primary btn-sm" >Comprar</button>

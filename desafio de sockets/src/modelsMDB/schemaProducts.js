@@ -9,6 +9,7 @@ const productSchema= new mongoose.Schema({
     photo_url:{type:String,required:true},
     description: {type: String, require: true},
     quantity:{type:Number,required:false},
+    category:{type: String, required:true}
 },
  { timestamps: true }
 )

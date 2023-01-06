@@ -2,6 +2,7 @@ const {products, users, carts} = require('../src/daos/mainDaos')();
 const logger = require('../config/winston.js');
 
 
+
 async function getProducts (req,res){
     const idUser = req.user._id;
     const user = await users.getById(idUser)
@@ -55,6 +56,29 @@ async function getProductById (req,res){
        logger.error(`getProductById${error.message}`)
     }
 
+}
+
+async function getByCategory (req,res){
+    const cat = req.params.categoria;
+    const idUser = req.user._id;
+
+    try {
+        const user = await users.getById(idUser)
+        const sanitizedUser = { 
+            name: user.username, 
+            photo_url: user.photo_url, 
+            _id: user._id, 
+            cart_id: user.cart_id }
+
+            
+        const prods = await products.getAll()
+        const productos = prods.filter(e =>e.category == cat)
+        // res.json(filteredProds)
+       res.status(200).render('table-productos',{ productos,sanitizedUser})
+
+    } catch (error) {
+        logger.error(`getByCategory ${error.message}`)
+    }
 }
 
 async function postProduct (req,res){
@@ -130,4 +154,4 @@ async function deleteProduct (req,res){
 }
 
 
-module.exports = {getProducts,getProductById,postProduct,PutProduct,deleteProduct}
+module.exports = {getProducts,getProductById,postProduct,PutProduct,deleteProduct,getByCategory}

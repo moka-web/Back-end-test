@@ -17,6 +17,12 @@ async function getCart (req,res){
         
         const cartid = getCart._id;
 
+        const totalPrice =await getCart.products.reduce((acc,item) =>{
+            return acc + item.price
+        },0)
+        
+        const priceRound = totalPrice.toFixed(3)
+
         const allProducts = await getCart.products.map((product) => ({
             name: product.name,
             photo_url: product.photo_url,
@@ -27,7 +33,7 @@ async function getCart (req,res){
         }));
 
             
-            res.render('cartProducts',{allProducts,sanitizedUser,cartid})
+        res.render('cartProducts',{allProducts,sanitizedUser,cartid,priceRound})
         
     } catch (error) {
         logger.error(` getCart : ${error.message}`)
@@ -46,13 +52,11 @@ async function addAproductToCart (req,res){
         const userCart = {cart_id: user.cart_id }
         const cart =await carts.getById(userCart.cart_id)
 
-        //revisar aca que onda 
+        //comprueba si existe un producto con el mismo id y modifica la cantidad
         if(!product.quantity){
             await products.modify(idprod,{quantity:1})
         }else 
         if(cart.products.some(e=>e._id == idprod)){
-
-           
 
             const productToAdd = cart.products.find(e=>e._id==idprod)
             const productQuant= {
@@ -66,7 +70,6 @@ async function addAproductToCart (req,res){
             const addAproduct = await carts.addCartProduct(cartId,product)
             res.redirect("/api/productos")
         }
-
 
     } catch (error) {
         logger.error( ` addAproductToCart: ${error.message}`)

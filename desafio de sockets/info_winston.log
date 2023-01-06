@@ -196,3 +196,13 @@
 {"kind":"ObjectId","message":"Cast to ObjectId failed for value \"client.js\" (type string) at path \"_id\" for model \"products\"","name":"CastError","path":"_id","reason":{},"stringValue":"\"client.js\"","value":"client.js","valueType":"string"}
 {"kind":"ObjectId","message":"Cast to ObjectId failed for value \"client.js\" (type string) at path \"_id\" for model \"products\"","name":"CastError","path":"_id","reason":{},"stringValue":"\"client.js\"","value":"client.js","valueType":"string"}
 {"kind":"ObjectId","message":"Cast to ObjectId failed for value \"client.js\" (type string) at path \"_id\" for model \"products\"","name":"CastError","path":"_id","reason":{},"stringValue":"\"client.js\"","value":"client.js","valueType":"string"}
+{"level":"error","message":"getByCategory Cannot access 'products' before initialization"}
+{"level":"error","message":"getByCategory Cannot access 'products' before initialization"}
+{"level":"error","message":"getByCategory products.filter is not a function"}
+{"level":"error","message":"getByCategory prods is not defined"}
+{"level":"error","message":"getByCategory prods is not defined"}
+{"level":"error","message":"getByCategory prods is not defined"}
+{"level":"error","message":"getByCategory filteredProds is not defined"}
+{"level":"error","message":"getByCategory filteredProds is not defined"}
+{"code":20003,"level":"error","moreInfo":"https://www.twilio.com/docs/errors/20003","status":401}
+{"code":20003,"level":"error","moreInfo":"https://www.twilio.com/docs/errors/20003","status":401}
